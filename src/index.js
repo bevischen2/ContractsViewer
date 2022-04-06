@@ -3,126 +3,8 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import detectEthereumProvider from '@metamask/detect-provider'
 import Web3 from 'web3';
-
-class ContractMethodSend extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      web3: props.web3,
-      accounts: props.accounts,
-      contract: props.contract,
-      method: props.method,
-      args: props.args,
-      desc: props.desc,
-      status: 'None',
-      text: 0,
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  renderInputs() {
-    const inputs = [];
-    for (let i = 0; i < this.state.args.length; i++) {
-      inputs.push(
-        <div key={i}>
-          <label>
-            {this.state.args[i].title}
-            <br />
-            <input
-              name={i}
-              type={this.state.args[i].type}
-              value={this.state.args[i].value}
-              onChange={this.handleChange} />
-          </label>
-        </div>
-      );
-    }
-    return inputs;
-  }
-
-  handleChange(event) {
-    // console.log(event);
-    let args = Object.assign([], this.state.args);
-    args[event.target.name].value = event.target.value;
-    this.setState({ args: args });
-  }
-
-  async handleSubmit(event) {
-    event.preventDefault();
-    const contract = this.state.contract;
-    const method = this.state.method;
-    const account = this.state.accounts[0];
-    let args = [...event.target]
-      .slice(0, event.target.length - 1)
-      .map((e) => (e.value));
-    let eGas = await contract.methods[method](...args).estimateGas({ from: account });
-
-    this.setState({ status: 'Executing...' });
-    contract.methods[method](...args)
-      .send({ from: account, gas: Math.floor(eGas * 1.5) })
-      .on('transactionHash', (hash) => {
-        this.setState({
-          status: [
-            'Executing...',
-            <br key='br' />,
-            'Tx: ' + hash,
-          ]
-        });
-      })
-      .on('receipt', (receipt) => {
-        this.setState({
-          status: [
-            'Completed.',
-            <br key='br' />,
-            'Tx: ' + receipt.transactionHash,
-          ]
-        });
-      })
-      .on('error', (error) => {
-        if (typeof (this.state.status) === 'string') {
-          this.setState({
-            status: [
-              'Error.',
-              <br key='br' />,
-              error.message,
-            ]
-          });
-        } else {
-          let status = this.state.status.slice();
-          status[0] = 'Error.';
-          this.setState({
-            status: [
-              ...status,
-              <br key='br' />,
-              error.message,
-            ]
-          });
-        }
-      })
-  }
-
-  render() {
-    if (this.state.web3 === null) {
-      return (
-        <div>
-          <h3>Loading Web3, accounts, and contract...</h3>
-        </div>
-      );
-    }
-    return (
-      <div>
-        <h3>{this.state.desc}</h3>
-        <p>Status: {this.state.status}</p>
-        <form onSubmit={this.handleSubmit}>
-          {this.renderInputs()}
-          <br />
-          <input type="submit" value="submit" />
-        </form>
-      </div>
-    );
-  }
-}
+import { ContractMethodSend, ContractMethodCall } from './web3-helper';
+import { PolarClashAstroView } from './polarClashAstorView';
 
 class App extends React.Component {
   constructor(props) {
@@ -134,9 +16,7 @@ class App extends React.Component {
       web3: null,
       contracts: {
         gatewayManager: null,
-      },
-      gatewayManagerData: {
-        threshold: null,
+        polarClashAstro: null,
       },
     };
 
@@ -158,7 +38,6 @@ class App extends React.Component {
     provider.on('accountsChanged', this.handleAccountsChanged);
 
     await this.loadContracts();
-    await this.loadContractData();
   }
 
   async detectMetamaskEthereumProvider(provider) {
@@ -221,6 +100,9 @@ class App extends React.Component {
       case 80001:
         res = await fetch('./polygonMumbai.network.json');
         break;
+      case 3:
+        res = await fetch('./ropsten.network.json');
+        break;
       case 4:
         res = await fetch('./rinkeby.network.json');
         break;
@@ -231,23 +113,25 @@ class App extends React.Component {
 
     // load contract.
     const web3 = this.state.web3;
-    const { abi, address } = artifacts.contracts.GatewayManager;
-    this.state.contracts.gatewayManager = new web3.eth.Contract(abi, address);
-  }
-
-  async loadContractData() {
-    const gatewayManager = this.state.contracts.gatewayManager;
-    const threshold = await gatewayManager.methods.threshold().call();
-
-    let gatewayManagerData = Object.assign({}, this.state.gatewayManagerData);
-    gatewayManagerData.threshold = threshold;
-    this.setState({
-      gatewayManagerData: gatewayManagerData,
-    });
+    let artifact = artifacts.contracts.GatewayManager;
+    this.state.contracts.gatewayManager = new web3.eth.Contract(artifact.abi, artifact.address);
+    artifact = artifacts.contracts.PolarClashAstro;
+    this.state.contracts.polarClashAstro = new web3.eth.Contract(artifact.abi, artifact.address);
   }
 
   renderGMThresholdSettingView() {
     let props = {
+      web3: this.state.web3,
+      accounts: this.state.accounts,
+      contract: this.state.contracts.gatewayManager,
+      title: 'GM Threshold',
+      desc: 'threshold值',
+      method: 'threshold',
+      args: [],
+    };
+    const callView = <ContractMethodCall {...props} />;
+
+    props = {
       web3: this.state.web3,
       accounts: this.state.accounts,
       contract: this.state.contracts.gatewayManager,
@@ -261,14 +145,30 @@ class App extends React.Component {
         },
       ],
     };
-    return <ContractMethodSend {...props} />
+    const sendView = <ContractMethodSend {...props} />;
+
+    return (
+      <div>
+        {callView}
+        {/* {sendView} */}
+      </div>
+    );
+  }
+
+  rendePolarClashAstro() {
+    let props = {
+      web3: this.state.web3,
+      accounts: this.state.accounts,
+      contract: this.state.contracts.polarClashAstro,
+    };
+    return <PolarClashAstroView {...props} />;
   }
 
   render() {
     if (!this.state.provider || this.state.accounts.length === 0) {
       return (
         <div>
-          v1.0.1
+          v1.0.2
           <br />
           <button onClick={async () => { this.connect() }} >Connect</button>
         </div>
@@ -278,10 +178,8 @@ class App extends React.Component {
     return (
       <div>
         <div>Connected. {this.state.accounts[0]}</div>
-        <br />
-        <div>{`threshold: ${this.state.gatewayManagerData.threshold}`}</div>
-        <div><button onClick={async () => { await this.loadContractData() }}>refresh</button></div>
-        {this.renderGMThresholdSettingView()}
+        {this.rendePolarClashAstro()}
+        {/* {this.renderGMThresholdSettingView()} */}
       </div>
     );
   }
