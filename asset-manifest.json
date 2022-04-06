@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/ContractsViewer/static/css/main.50b7364f.css",
-    "main.js": "/ContractsViewer/static/js/main.a2e03aca.js",
+    "main.css": "/ContractsViewer/static/css/main.d2397bb0.css",
+    "main.js": "/ContractsViewer/static/js/main.a7581551.js",
     "index.html": "/ContractsViewer/index.html",
-    "main.50b7364f.css.map": "/ContractsViewer/static/css/main.50b7364f.css.map",
-    "main.a2e03aca.js.map": "/ContractsViewer/static/js/main.a2e03aca.js.map"
+    "main.d2397bb0.css.map": "/ContractsViewer/static/css/main.d2397bb0.css.map",
+    "main.a7581551.js.map": "/ContractsViewer/static/js/main.a7581551.js.map"
   },
   "entrypoints": [
-    "static/css/main.50b7364f.css",
-    "static/js/main.a2e03aca.js"
+    "static/css/main.d2397bb0.css",
+    "static/js/main.a7581551.js"
   ]
 }
