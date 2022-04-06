@@ -6,6 +6,10 @@ import Web3 from 'web3';
 import { ContractMethodSend, ContractMethodCall } from './web3-helper';
 import { PolarClashAstroView } from './polarClashAstorView';
 
+import { Tabs } from 'react-simple-tabs-component'
+// (Optional) if you don't want to include bootstrap css stylesheet
+import 'react-simple-tabs-component/dist/index.css'
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -17,7 +21,7 @@ class App extends React.Component {
       contracts: {
         gatewayManager: null,
         polarClashAstro: null,
-      },
+      }
     };
 
     // binding actions
@@ -155,6 +159,49 @@ class App extends React.Component {
     );
   }
 
+  renderTabs() {
+    // Component Example
+    const TabOne = () => {
+      return (
+        <>
+          <h3>Tab One</h3>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis sint illum iusto nostrum cumque qui
+            voluptas tenetur inventore ut quis?
+          </p>
+        </>
+      )
+    }
+
+    const tabs = [
+      () => {
+        return (
+          <div>{this.rendePolarClashAstro()}</div>
+        )
+      },
+      () => {
+        return (
+          <div>{this.renderGMThresholdSettingView()}</div>
+        )
+      },
+    ]
+
+    return [
+      {
+        label: 'Polar Clash Astro',
+        Component: tabs[0]
+      },
+      {
+        label: 'Gateway Manager',
+        Component: tabs[1]
+      },
+      {
+        label: 'Tab Three',
+        Component: TabOne
+      }
+    ]
+  }
+
   rendePolarClashAstro() {
     let props = {
       web3: this.state.web3,
@@ -168,7 +215,7 @@ class App extends React.Component {
     if (!this.state.provider || this.state.accounts.length === 0) {
       return (
         <div>
-          v1.0.2
+          v1.0.3
           <br />
           <button onClick={async () => { this.connect() }} >Connect</button>
         </div>
@@ -178,8 +225,7 @@ class App extends React.Component {
     return (
       <div>
         <div>Connected. {this.state.accounts[0]}</div>
-        {this.rendePolarClashAstro()}
-        {/* {this.renderGMThresholdSettingView()} */}
+        <Tabs tabs={this.renderTabs()} /* Props */ />
       </div>
     );
   }
