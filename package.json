@@ -1,7 +1,7 @@
 {
   "name": "polar-clash",
   "version": "0.1.0",
-  "homepage": "https://bevischen2.github.io/PolarClash",
+  "homepage": "https://bevischen2.github.io/ContractsViewer",
   "private": true,
   "dependencies": {
     "@metamask/detect-provider": "^1.2.0",
