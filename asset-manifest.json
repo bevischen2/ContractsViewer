@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/PolarClash/static/css/main.61e7f717.css",
-    "main.js": "/PolarClash/static/js/main.51d7494f.js",
-    "index.html": "/PolarClash/index.html",
-    "main.61e7f717.css.map": "/PolarClash/static/css/main.61e7f717.css.map",
-    "main.51d7494f.js.map": "/PolarClash/static/js/main.51d7494f.js.map"
+    "main.css": "/ContractsViewer/static/css/main.61e7f717.css",
+    "main.js": "/ContractsViewer/static/js/main.15224272.js",
+    "index.html": "/ContractsViewer/index.html",
+    "main.61e7f717.css.map": "/ContractsViewer/static/css/main.61e7f717.css.map",
+    "main.15224272.js.map": "/ContractsViewer/static/js/main.15224272.js.map"
   },
   "entrypoints": [
     "static/css/main.61e7f717.css",
-    "static/js/main.51d7494f.js"
+    "static/js/main.15224272.js"
   ]
 }
