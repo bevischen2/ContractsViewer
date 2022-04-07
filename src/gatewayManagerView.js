@@ -1,5 +1,11 @@
 import React from 'react';
-import { ContractMethodSend, ContractMethodCall, ContractMethodCallView, ContractMethodArrayCallView } from './web3-helper';
+import {
+  ContractMethodSend,
+  ContractMethodCall,
+  ContractMethodCallView,
+  ContractMethodArrayCallView,
+  ETHBalanceView,
+} from './web3-helper';
 
 class GatewayManagerView extends React.Component {
   constructor(props) {
@@ -9,6 +15,14 @@ class GatewayManagerView extends React.Component {
       accounts: props.accounts,
       contract: props.contract,
     };
+  }
+
+  renderETHBalance() {
+    let props = {
+      web3: this.state.web3,
+      account: this.state.contract._address,
+    };
+    return <ETHBalanceView {...props} />;
   }
 
   renderOwner() {
@@ -177,6 +191,7 @@ class GatewayManagerView extends React.Component {
       <div>
         <h2>Gateway Manager</h2>
         <div>合約地址：{this.state.contract._address}</div>
+        {this.renderETHBalance()}
         {this.renderOwner()}
         {this.renderPauser()}
         {this.renderTokenHub()}
