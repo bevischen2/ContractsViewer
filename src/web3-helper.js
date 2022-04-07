@@ -382,7 +382,6 @@ class ETHBalanceView extends React.Component {
 
     this.setState({ text: 'Waiting...' });
     web3.eth.getBalance(account, (error, result) => {
-      console.log(result);
       if (error) {
         this.setState({ text: `${error.message}` });
         return;

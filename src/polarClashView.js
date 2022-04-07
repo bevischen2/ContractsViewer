@@ -1,11 +1,11 @@
 import React from 'react';
-import { 
-  ContractMethodSend, 
-  ContractMethodCall, 
-  ContractMethodCallView, 
+import {
+  ContractMethodSend,
+  ContractMethodCall,
+  ContractMethodCallView,
   ContractMethodArrayCallView,
   ETHBalanceView,
- } from './web3-helper';
+} from './web3-helper';
 
 class PolarClashView extends React.Component {
   constructor(props) {
@@ -26,7 +26,6 @@ class PolarClashView extends React.Component {
   }
 
   renderOwner() {
-    console.log(this.state.contract._address);
     let props = {
       web3: this.state.web3,
       accounts: this.state.accounts,
@@ -104,7 +103,6 @@ class PolarClashView extends React.Component {
       desc: '公售設定',
       method: 'seriesConfig',
       indexes: [0, 1, 2, 3].map((i) => [0, i]),
-
       renderText: (data) => {
         const startTime = data.startTime !== '0' ? `${new Date(data.startTime * 1000)}` : '尚未設置';
         const endTime = data.endTime !== '0' ? `${new Date(data.endTime * 1000)}` : '無限制';
@@ -129,7 +127,6 @@ class PolarClashView extends React.Component {
       desc: 'Breed販售設定',
       method: 'seriesConfig',
       indexes: [0, 1, 2, 3, 4].map((i) => [1, i]),
-
       renderText: (data) => {
         const startTime = data.startTime !== '0' ? `${new Date(data.startTime * 1000)}` : '尚未設置';
         const endTime = data.endTime !== '0' ? `${new Date(data.endTime * 1000)}` : '無限制';
@@ -140,6 +137,32 @@ class PolarClashView extends React.Component {
           '結束時間：' + endTime;
         return <div className='new-line'>{text}</div>;
       }
+    };
+    return <ContractMethodArrayCallView {...props} />;
+  }
+
+  renderPublicSeriesMintedCount() {
+    let props = {
+      web3: this.state.web3,
+      accounts: this.state.accounts,
+      contract: this.state.contract,
+      title: 'Public Series Minted Count',
+      desc: '公售系列已販售數量',
+      method: 'seriesMintedCount',
+      indexes: [0, 1, 2, 3].map((i) => [0, i]),
+    };
+    return <ContractMethodArrayCallView {...props} />;
+  }
+
+  renderBreedSeriesMintedCount() {
+    let props = {
+      web3: this.state.web3,
+      accounts: this.state.accounts,
+      contract: this.state.contract,
+      title: 'Breed Series Minted Count',
+      desc: 'Breed系列已販售數量',
+      method: 'seriesMintedCount',
+      indexes: [0, 1, 2, 3, 4].map((i) => [1, i]),
     };
     return <ContractMethodArrayCallView {...props} />;
   }
@@ -254,6 +277,8 @@ class PolarClashView extends React.Component {
         {this.renderSaleConfig()}
         {this.renderPublicSeriesConfig()}
         {this.renderBreederSeriesConfig()}
+        {this.renderPublicSeriesMintedCount()}
+        {this.renderBreedSeriesMintedCount()}
         {this.renderTotalSupply()}
         {this.renderBalanceOf()}
         {this.renderOwnerOf()}
