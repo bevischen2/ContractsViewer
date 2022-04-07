@@ -65,7 +65,7 @@ class PolarClashAstroView extends React.Component {
       args: [],
       renderText: (data) => {
         const startTime = data.saleStartTime ? `${new Date(data.saleStartTime * 1000)}` : '尚未設置';
-        const endTime = data.saleEndTime ? '無限制' : `${new Date(data.saleEndTime * 1000)}`;
+        const endTime = data.saleEndTime ? `${new Date(data.saleEndTime * 1000)}` : '無限制';
         const price = this.state.web3.utils.fromWei(data.price) + ' ethers';
         const text = '最大數量：' + data.maxSize + '\n' +
           '開始時間：' + startTime + '\n' +
@@ -112,8 +112,6 @@ class PolarClashAstroView extends React.Component {
     };
     return <ContractMethodCall {...props} />;
   }
-
-  
 
   renderBalanceOf() {
     let props = {
