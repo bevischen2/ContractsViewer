@@ -6,6 +6,7 @@ import Web3 from 'web3';
 import { PolarClashAstroView } from './polarClashAstorView';
 import { PolarClashView } from './polarClashView';
 import { GatewayManagerView } from './gatewayManagerView';
+import { HoneyPotView } from './honeyPotView';
 
 import { Tabs } from 'react-simple-tabs-component'
 // (Optional) if you don't want to include bootstrap css stylesheet
@@ -23,6 +24,7 @@ class App extends React.Component {
         gatewayManager: null,
         polarClashAstro: null,
         polarClash: null,
+        honeyPot: null,
       }
     };
 
@@ -125,22 +127,11 @@ class App extends React.Component {
     this.state.contracts.polarClashAstro = new web3.eth.Contract(artifact.abi, artifact.address);
     artifact = artifacts.contracts.PolarClash;
     this.state.contracts.polarClash = new web3.eth.Contract(artifact.abi, artifact.address);
+    artifact = artifacts.contracts.HoneyPot;
+    this.state.contracts.honeyPot = new web3.eth.Contract(artifact.abi, artifact.address);
   }
 
   renderTabs() {
-    // Component Example
-    const TabOne = () => {
-      return (
-        <>
-          <h3>Tab One</h3>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis sint illum iusto nostrum cumque qui
-            voluptas tenetur inventore ut quis?
-          </p>
-        </>
-      )
-    }
-
     const tabs = [
       () => {
         return (
@@ -157,6 +148,11 @@ class App extends React.Component {
           <div>{this.renderGatewayManager()}</div>
         )
       },
+      () => {
+        return (
+          <div>{this.renderHoneyPot()}</div>
+        )
+      },
     ]
 
     return [
@@ -171,6 +167,10 @@ class App extends React.Component {
       {
         label: 'Gateway Manager',
         Component: tabs[2]
+      },
+      {
+        label: 'HoneyPot',
+        Component: tabs[3]
       },
     ]
   }
@@ -202,11 +202,20 @@ class App extends React.Component {
     return <GatewayManagerView {...props} />;
   }
 
+  renderHoneyPot() {
+    let props = {
+      web3: this.state.web3,
+      accounts: this.state.accounts,
+      contract: this.state.contracts.honeyPot,
+    };
+    return <HoneyPotView {...props} />;
+  }
+
   render() {
     if (!this.state.provider || this.state.accounts.length === 0) {
       return (
         <div>
-          v1.0.7
+          v1.0.8
           <br />
           <button onClick={async () => { this.connect() }} >Connect</button>
         </div>
