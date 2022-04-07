@@ -4,6 +4,7 @@ import './index.css';
 import detectEthereumProvider from '@metamask/detect-provider'
 import Web3 from 'web3';
 import { PolarClashAstroView } from './polarClashAstorView';
+import { PolarClashView } from './polarClashView';
 import { GatewayManagerView } from './gatewayManagerView';
 
 import { Tabs } from 'react-simple-tabs-component'
@@ -21,6 +22,7 @@ class App extends React.Component {
       contracts: {
         gatewayManager: null,
         polarClashAstro: null,
+        polarClash: null,
       }
     };
 
@@ -121,6 +123,8 @@ class App extends React.Component {
     this.state.contracts.gatewayManager = new web3.eth.Contract(artifact.abi, artifact.address);
     artifact = artifacts.contracts.PolarClashAstro;
     this.state.contracts.polarClashAstro = new web3.eth.Contract(artifact.abi, artifact.address);
+    artifact = artifacts.contracts.PolarClash;
+    this.state.contracts.polarClash = new web3.eth.Contract(artifact.abi, artifact.address);
   }
 
   renderTabs() {
@@ -145,6 +149,11 @@ class App extends React.Component {
       },
       () => {
         return (
+          <div>{this.rendePolarClash()}</div>
+        )
+      },
+      () => {
+        return (
           <div>{this.renderGatewayManager()}</div>
         )
       },
@@ -156,13 +165,13 @@ class App extends React.Component {
         Component: tabs[0]
       },
       {
-        label: 'Gateway Manager',
+        label: 'Polar Clash',
         Component: tabs[1]
       },
       {
-        label: 'Tab Three',
-        Component: TabOne
-      }
+        label: 'Gateway Manager',
+        Component: tabs[2]
+      },
     ]
   }
 
@@ -173,6 +182,15 @@ class App extends React.Component {
       contract: this.state.contracts.polarClashAstro,
     };
     return <PolarClashAstroView {...props} />;
+  }
+
+  rendePolarClash() {
+    let props = {
+      web3: this.state.web3,
+      accounts: this.state.accounts,
+      contract: this.state.contracts.polarClash,
+    };
+    return <PolarClashView {...props} />;
   }
 
   renderGatewayManager() {
@@ -188,7 +206,7 @@ class App extends React.Component {
     if (!this.state.provider || this.state.accounts.length === 0) {
       return (
         <div>
-          v1.0.5
+          v1.0.6
           <br />
           <button onClick={async () => { this.connect() }} >Connect</button>
         </div>
@@ -198,7 +216,7 @@ class App extends React.Component {
     return (
       <div>
         <div>Connected. {this.state.accounts[0]}</div>
-        <Tabs tabs={this.renderTabs()} /* Props */ />
+        <Tabs tabs={this.renderTabs()} />
       </div>
     );
   }

@@ -1,13 +1,13 @@
 import React from 'react';
-import {
-  ContractMethodSend,
-  ContractMethodCall,
-  ContractMethodCallView,
+import { 
+  ContractMethodSend, 
+  ContractMethodCall, 
+  ContractMethodCallView, 
   ContractMethodArrayCallView,
   ETHBalanceView,
-} from './web3-helper';
+ } from './web3-helper';
 
-class PolarClashAstroView extends React.Component {
+class PolarClashView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,6 +26,7 @@ class PolarClashAstroView extends React.Component {
   }
 
   renderOwner() {
+    console.log(this.state.contract._address);
     let props = {
       web3: this.state.web3,
       accounts: this.state.accounts,
@@ -40,6 +41,32 @@ class PolarClashAstroView extends React.Component {
       }
     };
     return <ContractMethodCallView {...props} />;
+  }
+
+  renderPausers() {
+    let props = {
+      web3: this.state.web3,
+      accounts: this.state.accounts,
+      contract: this.state.contract,
+      title: 'Pausers',
+      desc: 'pauser列表',
+      method: 'pausers',
+      indexes: [0, 1, 2].map((i) => [i]),
+    };
+    return <ContractMethodArrayCallView {...props} />;
+  }
+
+  renderMinters() {
+    let props = {
+      web3: this.state.web3,
+      accounts: this.state.accounts,
+      contract: this.state.contract,
+      title: 'Minters',
+      desc: 'minter列表',
+      method: 'minters',
+      indexes: [0, 1, 2].map((i) => [i]),
+    };
+    return <ContractMethodArrayCallView {...props} />;
   }
 
   renderName() {
@@ -68,6 +95,55 @@ class PolarClashAstroView extends React.Component {
     return <ContractMethodCallView {...props} />;
   }
 
+  renderPublicSeriesConfig() {
+    let props = {
+      web3: this.state.web3,
+      accounts: this.state.accounts,
+      contract: this.state.contract,
+      title: 'Public Series Config',
+      desc: '公售設定',
+      method: 'seriesConfig',
+      indexes: [0, 1, 2, 3].map((i) => [0, i]),
+
+      renderText: (data) => {
+        const startTime = data.startTime !== '0' ? `${new Date(data.startTime * 1000)}` : '尚未設置';
+        const endTime = data.endTime !== '0' ? `${new Date(data.endTime * 1000)}` : '無限制';
+        const price = this.state.web3.utils.fromWei(data.price) + ' ethers';
+        const text = '開始id：' + data.startId + '\n' +
+          '最大數量：' + data.maxSize + '\n' +
+          '開始時間：' + startTime + '\n' +
+          '結束時間：' + endTime + '\n' +
+          '價格：' + price;
+        return <div className='new-line'>{text}</div>;
+      }
+    };
+    return <ContractMethodArrayCallView {...props} />;
+  }
+
+  renderBreederSeriesConfig() {
+    let props = {
+      web3: this.state.web3,
+      accounts: this.state.accounts,
+      contract: this.state.contract,
+      title: 'Breeder Series Config',
+      desc: 'Breed販售設定',
+      method: 'seriesConfig',
+      indexes: [0, 1, 2, 3, 4].map((i) => [1, i]),
+
+      renderText: (data) => {
+        const startTime = data.startTime !== '0' ? `${new Date(data.startTime * 1000)}` : '尚未設置';
+        const endTime = data.endTime !== '0' ? `${new Date(data.endTime * 1000)}` : '無限制';
+        const price = this.state.web3.utils.fromWei(data.price) + ' ethers';
+        const text = '開始id：' + data.startId + '\n' +
+          '最大數量：' + data.maxSize + '\n' +
+          '開始時間：' + startTime + '\n' +
+          '結束時間：' + endTime;
+        return <div className='new-line'>{text}</div>;
+      }
+    };
+    return <ContractMethodArrayCallView {...props} />;
+  }
+
   renderSaleConfig() {
     let props = {
       web3: this.state.web3,
@@ -78,13 +154,8 @@ class PolarClashAstroView extends React.Component {
       method: 'saleConfig',
       args: [],
       renderText: (data) => {
-        const startTime = data.saleStartTime !== '0' ? `${new Date(data.saleStartTime * 1000)}` : '尚未設置';
-        const endTime = data.saleEndTime !== '0' ? `${new Date(data.saleEndTime * 1000)}` : '無限制';
-        const price = this.state.web3.utils.fromWei(data.price) + ' ethers';
-        const text = '最大數量：' + data.maxSize + '\n' +
-          '開始時間：' + startTime + '\n' +
-          '結束時間：' + endTime + '\n' +
-          '價格：' + price;
+        const text = '單次mint最大數量：' + data.maxBatchSize + '\n' +
+          'Breeder：' + data.breeder;
         return <div className='new-line'>{text}</div>;
       }
     };
@@ -102,29 +173,6 @@ class PolarClashAstroView extends React.Component {
       args: []
     };
     return <ContractMethodCallView {...props} />;
-  }
-
-  renderWhitelist() {
-    let props = {
-      web3: this.state.web3,
-      accounts: this.state.accounts,
-      contract: this.state.contract,
-      title: 'Whitelist',
-      desc: '白名單查詢',
-      method: 'whitelist',
-      args: [
-        {
-          type: 'string',
-          title: '用戶地址',
-          value: '',
-        },
-      ],
-      renderText: (data) => {
-        const text = '該用戶剩餘可鑄造數量：' + data;
-        return <div className='new-line'>{text}</div>;
-      }
-    };
-    return <ContractMethodCall {...props} />;
   }
 
   renderBalanceOf() {
@@ -195,15 +243,18 @@ class PolarClashAstroView extends React.Component {
   render() {
     return (
       <div>
-        <h2>Polar Clash Astro</h2>
+        <h2>Polar Clash</h2>
         <div>合約地址：{this.state.contract._address}</div>
         {this.renderETHBalance()}
         {this.renderOwner()}
+        {this.renderPausers()}
+        {this.renderMinters()}
         {this.renderName()}
         {this.renderSymbol()}
         {this.renderSaleConfig()}
+        {this.renderPublicSeriesConfig()}
+        {this.renderBreederSeriesConfig()}
         {this.renderTotalSupply()}
-        {this.renderWhitelist()}
         {this.renderBalanceOf()}
         {this.renderOwnerOf()}
         {this.renderTokenURI()}
@@ -212,4 +263,4 @@ class PolarClashAstroView extends React.Component {
   }
 }
 
-export { PolarClashAstroView };
+export { PolarClashView };

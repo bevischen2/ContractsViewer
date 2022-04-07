@@ -360,4 +360,55 @@ class ContractMethodArrayCallView extends React.Component {
   }
 }
 
-export { ContractMethodSend, ContractMethodCall, ContractMethodCallView, ContractMethodArrayCallView };
+class ETHBalanceView extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      web3: props.web3,
+      account: props.account,
+      text: 'Waiting...',
+    };
+
+    this.callContractMethod = this.callContractMethod.bind(this);
+  }
+
+  componentDidMount() {
+    this.callContractMethod();
+  }
+
+  callContractMethod() {
+    const account = this.state.account;
+    const web3 = this.state.web3;
+
+    this.setState({ text: 'Waiting...' });
+    web3.eth.getBalance(account, (error, result) => {
+      console.log(result);
+      if (error) {
+        this.setState({ text: `${error.message}` });
+        return;
+      }
+
+      this.setState({ text: `合約ETH餘額為： ${web3.utils.fromWei(result)} ethers` });
+    });
+  }
+
+  render() {
+    if (this.state.web3 === null) {
+      return (
+        <div>
+          <h3>Loading Web3, accounts, and contract...</h3>
+        </div>
+      );
+    }
+    return (
+      <div>
+        <div>{this.state.text}</div>
+        <button onClick={() => this.callContractMethod()}>
+          Refresh
+        </button>
+      </div>
+    );
+  }
+}
+
+export { ContractMethodSend, ContractMethodCall, ContractMethodCallView, ContractMethodArrayCallView, ETHBalanceView };
