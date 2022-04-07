@@ -7,10 +7,13 @@ import { PolarClashAstroView } from './polarClashAstorView';
 import { PolarClashView } from './polarClashView';
 import { GatewayManagerView } from './gatewayManagerView';
 import { HoneyPotView } from './honeyPotView';
+import { SignerHubView } from './signerHubView';
+import { TokenHubView } from './tokenHubView';
 
 import { Tabs } from 'react-simple-tabs-component'
 // (Optional) if you don't want to include bootstrap css stylesheet
 import 'react-simple-tabs-component/dist/index.css'
+import { toHaveAccessibleDescription } from '@testing-library/jest-dom/dist/matchers';
 
 class App extends React.Component {
   constructor(props) {
@@ -20,11 +23,21 @@ class App extends React.Component {
       chainId: null,
       accounts: [],
       web3: null,
+      artifacts: {
+        gatewayManager: null,
+        polarClashAstro: null,
+        polarClash: null,
+        honeyPot: null,
+        signerHub: null,
+        tokenHub: null,
+      },
       contracts: {
         gatewayManager: null,
         polarClashAstro: null,
         polarClash: null,
         honeyPot: null,
+        signerHub: null,
+        tokenHub: null,
       }
     };
 
@@ -122,13 +135,23 @@ class App extends React.Component {
     // load contract.
     const web3 = this.state.web3;
     let artifact = artifacts.contracts.GatewayManager;
+    this.state.artifacts.gatewayManager = artifact;
     this.state.contracts.gatewayManager = new web3.eth.Contract(artifact.abi, artifact.address);
     artifact = artifacts.contracts.PolarClashAstro;
+    this.state.artifacts.polarClashAstro = artifact;
     this.state.contracts.polarClashAstro = new web3.eth.Contract(artifact.abi, artifact.address);
     artifact = artifacts.contracts.PolarClash;
+    this.state.artifacts.polarClash = artifact;
     this.state.contracts.polarClash = new web3.eth.Contract(artifact.abi, artifact.address);
     artifact = artifacts.contracts.HoneyPot;
+    this.state.artifacts.honeyPot = artifact;
     this.state.contracts.honeyPot = new web3.eth.Contract(artifact.abi, artifact.address);
+    artifact = artifacts.contracts.SignerHub;
+    this.state.artifacts.signerHub = artifact;
+    this.state.contracts.signerHub = new web3.eth.Contract(artifact.abi, artifact.address);
+    artifact = artifacts.contracts.TokenHub;
+    this.state.artifacts.tokenHub = artifact;
+    this.state.contracts.tokenHub = new web3.eth.Contract(artifact.abi, artifact.address);
   }
 
   renderTabs() {
@@ -153,6 +176,16 @@ class App extends React.Component {
           <div>{this.renderHoneyPot()}</div>
         )
       },
+      () => {
+        return (
+          <div>{this.renderSignerHub()}</div>
+        )
+      },
+      () => {
+        return (
+          <div>{this.renderTokenHub()}</div>
+        )
+      },
     ]
 
     return [
@@ -169,8 +202,16 @@ class App extends React.Component {
         Component: tabs[2]
       },
       {
-        label: 'HoneyPot',
+        label: 'Honey Pot',
         Component: tabs[3]
+      },
+      {
+        label: 'Signer Hub',
+        Component: tabs[4]
+      },
+      {
+        label: 'Token Hub',
+        Component: tabs[5]
       },
     ]
   }
@@ -211,11 +252,31 @@ class App extends React.Component {
     return <HoneyPotView {...props} />;
   }
 
+  renderSignerHub() {
+    let props = {
+      web3: this.state.web3,
+      accounts: this.state.accounts,
+      contract: this.state.contracts.signerHub,
+      artifacts: this.state.artifacts,
+    };
+    return <SignerHubView {...props} />;
+  }
+
+  renderTokenHub() {
+    let props = {
+      web3: this.state.web3,
+      accounts: this.state.accounts,
+      contract: this.state.contracts.tokenHub,
+      artifacts: this.state.artifacts,
+    };
+    return <TokenHubView {...props} />;
+  }
+
   render() {
     if (!this.state.provider || this.state.accounts.length === 0) {
       return (
         <div>
-          v1.0.8
+          v1.0.9
           <br />
           <button onClick={async () => { this.connect() }} >Connect</button>
         </div>

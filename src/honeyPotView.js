@@ -162,7 +162,6 @@ class HoneyPotView extends React.Component {
       method: 'breedConfigs',
       indexes: [0, 1, 2, 3, 4].map((i) => [i]),
       renderText: (data) => {
-        console.log(data);
         const quantity = data.nftQuantity;
         const price = data.hpPrice;
         const text = 'Polar Clash要求數量：' + quantity + '\n' +
