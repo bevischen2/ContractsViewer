@@ -8583,6 +8583,11 @@ react-scripts@5.0.0:
   optionalDependencies:
     fsevents "^2.3.2"
 
+react-simple-tabs-component@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/react-simple-tabs-component/-/react-simple-tabs-component-2.1.1.tgz#afa15b23448a0e7221ba278da35cc82d8e1d6b35"
+  integrity sha512-MpAGtZn/C7yZT9dlgZen5A3bnyZpAO6CUSGuaXZtxgOnP7RTo1n7kLiNaQtXrrBmYKxJL6PaUWASsUFeJI5LNg==
+
 react@^18.0.0:
   version "18.0.0"
   resolved "https://registry.yarnpkg.com/react/-/react-18.0.0.tgz#b468736d1f4a5891f38585ba8e8fb29f91c3cb96"

@@ -53,3 +53,11 @@ ol, ul {
   margin-left: 20px;
 }
 
+.new-line {
+  white-space: pre-line;
+}
+
+div {
+  padding: 5px 0px;
+}
+
