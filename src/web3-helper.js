@@ -176,7 +176,7 @@ class ContractMethodCall extends React.Component {
     contract.methods[method](...args)
       .call({ from: account }, (error, result) => {
         if (error) {
-          this.setState({ text: `${error}` });
+          this.setState({ text: `${error.message}` });
           return;
         }
 
