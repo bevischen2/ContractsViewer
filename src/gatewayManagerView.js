@@ -122,7 +122,7 @@ class GatewayManagerView extends React.Component {
       accounts: this.state.accounts,
       contract: this.state.contract,
       title: 'Deposits',
-      desc: '用戶deposit資訊查詢',
+      desc: '用戶存入資訊查詢',
       method: 'deposits',
       args: [
         {
@@ -148,7 +148,7 @@ class GatewayManagerView extends React.Component {
       accounts: this.state.accounts,
       contract: this.state.contract,
       title: 'Withdrawals',
-      desc: '用戶deposit資訊查詢',
+      desc: '用戶提領資訊查詢',
       method: 'withdrawals',
       args: [
         {
