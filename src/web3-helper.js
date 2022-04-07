@@ -360,6 +360,91 @@ class ContractMethodArrayCallView extends React.Component {
   }
 }
 
+class ContractMethodDynamicArrayCallView extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      web3: props.web3,
+      accounts: props.accounts,
+      contract: props.contract,
+      sourceMethod: props.sourceMethod,
+      method: props.method,
+      args: props.args,
+      title: props.title,
+      desc: props.desc,
+      text: 'Waiting...',
+      renderText: props.renderText,
+      results: null,
+    };
+
+    this.callContractMethod = this.callContractMethod.bind(this);
+  }
+
+  componentDidMount() {
+    this.callContractMethod();
+  }
+
+  async callContractMethod() {
+    const contract = this.state.contract;
+    const method = this.state.method;
+    const args = this.state.args;
+    const account = this.state.accounts[0];
+
+    this.setState({ text: 'Waiting...' });
+
+    const indexes = await this.state.sourceMethod.call({ from: account })
+    this.state.results = Array.apply(null, Array(parseInt(indexes)));
+    
+    for (let i = 0; i < indexes; i++) {
+      contract.methods[method](...args, i)
+        .call({ from: account }, (error, result) => {
+          const results = this.state.results;
+          if (error) {
+            results[i] = `${error.message}`;
+            return;
+          }
+          if (this.state.renderText) {
+            results[i] = `${i}: ${this.state.renderText(result)}`;
+          } else {
+            results[i] = `${i}: ${result}`;
+          }
+          this.setState({ text: this.renderResults() });
+        });
+    }
+  }
+
+  renderResults() {
+    const results = this.state.results;
+    return results.map((text, i) => (
+      <div key={i}>
+        {text}
+      </div>
+    ));
+  }
+
+  render() {
+    if (this.state.web3 === null) {
+      return (
+        <div>
+          <h3>Loading Web3, accounts, and contract...</h3>
+        </div>
+      );
+    }
+    return (
+      <div>
+        <h3>{this.state.title}</h3>
+        <p>{this.state.desc}</p>
+        <div>
+          <button onClick={() => this.callContractMethod()}>
+            Refresh
+          </button>
+          <div>{this.state.text}</div>
+        </div>
+      </div>
+    );
+  }
+}
+
 class ETHBalanceView extends React.Component {
   constructor(props) {
     super(props);
@@ -410,4 +495,11 @@ class ETHBalanceView extends React.Component {
   }
 }
 
-export { ContractMethodSend, ContractMethodCall, ContractMethodCallView, ContractMethodArrayCallView, ETHBalanceView };
+export {
+  ContractMethodSend,
+  ContractMethodCall,
+  ContractMethodCallView,
+  ContractMethodArrayCallView,
+  ContractMethodDynamicArrayCallView,
+  ETHBalanceView
+};
