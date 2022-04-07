@@ -3,8 +3,8 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import detectEthereumProvider from '@metamask/detect-provider'
 import Web3 from 'web3';
-import { ContractMethodSend, ContractMethodCall } from './web3-helper';
 import { PolarClashAstroView } from './polarClashAstorView';
+import { GatewayManagerView } from './gatewayManagerView';
 
 import { Tabs } from 'react-simple-tabs-component'
 // (Optional) if you don't want to include bootstrap css stylesheet
@@ -123,42 +123,6 @@ class App extends React.Component {
     this.state.contracts.polarClashAstro = new web3.eth.Contract(artifact.abi, artifact.address);
   }
 
-  renderGMThresholdSettingView() {
-    let props = {
-      web3: this.state.web3,
-      accounts: this.state.accounts,
-      contract: this.state.contracts.gatewayManager,
-      title: 'GM Threshold',
-      desc: 'threshold值',
-      method: 'threshold',
-      args: [],
-    };
-    const callView = <ContractMethodCall {...props} />;
-
-    props = {
-      web3: this.state.web3,
-      accounts: this.state.accounts,
-      contract: this.state.contracts.gatewayManager,
-      desc: 'set threshold',
-      method: 'setThreshold',
-      args: [
-        {
-          type: 'number',
-          title: 'threshold',
-          value: 0,
-        },
-      ],
-    };
-    const sendView = <ContractMethodSend {...props} />;
-
-    return (
-      <div>
-        {callView}
-        {/* {sendView} */}
-      </div>
-    );
-  }
-
   renderTabs() {
     // Component Example
     const TabOne = () => {
@@ -181,7 +145,7 @@ class App extends React.Component {
       },
       () => {
         return (
-          <div>{this.renderGMThresholdSettingView()}</div>
+          <div>{this.renderGatewayManager()}</div>
         )
       },
     ]
@@ -211,11 +175,20 @@ class App extends React.Component {
     return <PolarClashAstroView {...props} />;
   }
 
+  renderGatewayManager() {
+    let props = {
+      web3: this.state.web3,
+      accounts: this.state.accounts,
+      contract: this.state.contracts.gatewayManager,
+    };
+    return <GatewayManagerView {...props} />;
+  }
+
   render() {
     if (!this.state.provider || this.state.accounts.length === 0) {
       return (
         <div>
-          v1.0.3
+          v1.0.5
           <br />
           <button onClick={async () => { this.connect() }} >Connect</button>
         </div>

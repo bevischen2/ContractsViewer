@@ -243,7 +243,7 @@ class ContractMethodCallView extends React.Component {
     contract.methods[method](...args)
       .call({ from: account }, (error, result) => {
         if (error) {
-          this.setState({ text: `${error}` });
+          this.setState({ text: `${error.message}` });
           return;
         }
 
@@ -279,4 +279,85 @@ class ContractMethodCallView extends React.Component {
   }
 }
 
-export { ContractMethodSend, ContractMethodCall, ContractMethodCallView };
+class ContractMethodArrayCallView extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      web3: props.web3,
+      accounts: props.accounts,
+      contract: props.contract,
+      method: props.method,
+      indexes: props.indexes,
+      title: props.title,
+      desc: props.desc,
+      text: 'Waiting...',
+      renderText: props.renderText,
+      results: props.indexes.map(() => null),
+    };
+
+    this.callContractMethod = this.callContractMethod.bind(this);
+  }
+
+  componentDidMount() {
+    this.callContractMethod();
+  }
+
+  callContractMethod() {
+    const contract = this.state.contract;
+    const method = this.state.method;
+    const account = this.state.accounts[0];
+    const indexes = this.state.indexes;
+
+    this.setState({ text: 'Waiting...' });
+
+    for (let i = 0; i < indexes.length; i++) {
+      contract.methods[method](...indexes[i])
+        .call({ from: account }, (error, result) => {
+          const results = this.state.results;
+          if (error) {
+            results[i] = `${error.message}`;
+            return;
+          }
+          if (this.state.renderText) {
+            results[i] = this.state.renderText(result);
+          } else {
+            results[i] = `${this.state.indexes[i]}: ${result}`;
+          }
+          this.setState({ text: this.renderResults() });
+        });
+    }
+  }
+
+  renderResults() {
+    const results = this.state.results;
+    return results.map((text, i) => (
+      <div key={i}>
+        {text}
+      </div>
+    ));
+  }
+
+  render() {
+    if (this.state.web3 === null) {
+      return (
+        <div>
+          <h3>Loading Web3, accounts, and contract...</h3>
+        </div>
+      );
+    }
+    return (
+      <div>
+        <h3>{this.state.title}</h3>
+        <p>{this.state.desc}</p>
+        <div>
+          <button onClick={() => this.callContractMethod()}>
+            Refresh
+          </button>
+          <div>{this.state.text}</div>
+        </div>
+      </div>
+    );
+  }
+}
+
+export { ContractMethodSend, ContractMethodCall, ContractMethodCallView, ContractMethodArrayCallView };
