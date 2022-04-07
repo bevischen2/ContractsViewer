@@ -26,7 +26,6 @@ class PolarClashView extends React.Component {
   }
 
   renderOwner() {
-    console.log(this.state.contract._address);
     let props = {
       web3: this.state.web3,
       accounts: this.state.accounts,
