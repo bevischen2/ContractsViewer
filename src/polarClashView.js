@@ -2,8 +2,10 @@ import React from 'react';
 import {
   ContractMethodSend,
   ContractMethodCall,
+  ContractMethodDynamicArrayCall,
   ContractMethodCallView,
   ContractMethodArrayCallView,
+  ContractMethodDynamicArrayCallView,
   ETHBalanceView,
 } from './web3-helper';
 
@@ -263,6 +265,26 @@ class PolarClashView extends React.Component {
     return <ContractMethodCall {...props} />;
   }
 
+  renderTokensOfOwner() {
+    let props = {
+      web3: this.state.web3,
+      accounts: this.state.accounts,
+      contract: this.state.contract,
+      title: 'Tokens Of Owner',
+      desc: '查詢用戶的nft列表',
+      sourceMethod: this.state.contract.methods.balanceOf,
+      method: 'tokenOfOwnerByIndex',
+      args: [
+        {
+          type: 'string',
+          title: '用戶地址',
+          value: '',
+        },
+      ],
+    };
+    return <ContractMethodDynamicArrayCall {...props} />;
+  }
+
   render() {
     return (
       <div>
@@ -279,6 +301,7 @@ class PolarClashView extends React.Component {
         {this.renderBreederSeriesConfig()}
         {this.renderPublicSeriesMintedCount()}
         {this.renderBreedSeriesMintedCount()}
+        {this.renderTokensOfOwner()}
         {this.renderTotalSupply()}
         {this.renderBalanceOf()}
         {this.renderOwnerOf()}
