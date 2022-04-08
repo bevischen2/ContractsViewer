@@ -13,7 +13,6 @@ import { TokenHubView } from './tokenHubView';
 import { Tabs } from 'react-simple-tabs-component'
 // (Optional) if you don't want to include bootstrap css stylesheet
 import 'react-simple-tabs-component/dist/index.css'
-import { toHaveAccessibleDescription } from '@testing-library/jest-dom/dist/matchers';
 
 class App extends React.Component {
   constructor(props) {
