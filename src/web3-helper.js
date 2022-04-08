@@ -211,6 +211,122 @@ class ContractMethodCall extends React.Component {
   }
 }
 
+class ContractMethodDynamicArrayCall extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      web3: props.web3,
+      accounts: props.accounts,
+      contract: props.contract,
+      sourceMethod: props.sourceMethod,
+      method: props.method,
+      args: props.args,
+      title: props.title,
+      desc: props.desc,
+      text: '',
+      renderText: props.renderText,
+      results: null,
+    };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  renderInputs() {
+    const inputs = [];
+    for (let i = 0; i < this.state.args.length; i++) {
+      inputs.push(
+        <div key={i}>
+          <label>
+            {this.state.args[i].title}
+            <br />
+            <input
+              name={i}
+              type={this.state.args[i].type}
+              value={this.state.args[i].value}
+              onChange={this.handleChange} />
+          </label>
+        </div>
+      );
+    }
+    return inputs;
+  }
+
+  handleChange(event) {
+    let args = Object.assign([], this.state.args);
+    args[event.target.name].value = event.target.value;
+    this.setState({ args: args });
+  }
+
+  async handleSubmit(event) {
+    event.preventDefault();
+    const contract = this.state.contract;
+    const method = this.state.method;
+    const account = this.state.accounts[0];
+    let args = [...event.target]
+      .slice(0, event.target.length - 1)
+      .map((e) => (e.value));
+
+    this.setState({ text: 'Waiting...' });
+
+    const indexes = await this.state.sourceMethod(...args)
+      .call({ from: account })
+
+    if (indexes === '0') {
+      this.setState({ text: '查無資料' });
+      return;
+    }
+
+    this.state.results = Array.apply(null, Array(parseInt(indexes)));
+
+    for (let i = 0; i < indexes; i++) {
+      contract.methods[method](...args, i)
+        .call({ from: account }, (error, result) => {
+          const results = this.state.results;
+          if (error) {
+            results[i] = `${error.message}`;
+            return;
+          }
+          if (this.state.renderText) {
+            results[i] = `${i}: ${this.state.renderText(result)}`;
+          } else {
+            results[i] = `${i}: ${result}`;
+          }
+          this.setState({ text: this.renderResults() });
+        });
+    }
+  }
+
+  renderResults() {
+    const results = this.state.results;
+    return results.map((text, i) => (
+      <div key={i}>
+        {text}
+      </div>
+    ));
+  }
+
+  render() {
+    if (this.state.web3 === null) {
+      return (
+        <div>
+          <h3>Loading Web3, accounts, and contract...</h3>
+        </div>
+      );
+    }
+    return (
+      <div>
+        <h3>{this.state.title}</h3>
+        <p>{this.state.desc}</p>
+        <form onSubmit={this.handleSubmit}>
+          {this.renderInputs()}
+          <input type="submit" value="查詢" />
+        </form>
+        <div>{this.state.text}</div>
+      </div>
+    );
+  }
+}
+
 class ContractMethodCallView extends React.Component {
   constructor(props) {
     super(props);
@@ -393,8 +509,14 @@ class ContractMethodDynamicArrayCallView extends React.Component {
     this.setState({ text: 'Waiting...' });
 
     const indexes = await this.state.sourceMethod.call({ from: account })
+
+    if (indexes === '0') {
+      this.setState({ text: '查無資料' });
+      return;
+    }
+
     this.state.results = Array.apply(null, Array(parseInt(indexes)));
-    
+
     for (let i = 0; i < indexes; i++) {
       contract.methods[method](...args, i)
         .call({ from: account }, (error, result) => {
@@ -498,6 +620,7 @@ class ETHBalanceView extends React.Component {
 export {
   ContractMethodSend,
   ContractMethodCall,
+  ContractMethodDynamicArrayCall,
   ContractMethodCallView,
   ContractMethodArrayCallView,
   ContractMethodDynamicArrayCallView,

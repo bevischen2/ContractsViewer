@@ -13,7 +13,6 @@ import { TokenHubView } from './tokenHubView';
 import { Tabs } from 'react-simple-tabs-component'
 // (Optional) if you don't want to include bootstrap css stylesheet
 import 'react-simple-tabs-component/dist/index.css'
-import { toHaveAccessibleDescription } from '@testing-library/jest-dom/dist/matchers';
 
 class App extends React.Component {
   constructor(props) {
@@ -276,7 +275,7 @@ class App extends React.Component {
     if (!this.state.provider || this.state.accounts.length === 0) {
       return (
         <div>
-          v1.0.9
+          v1.0.10
           <br />
           <button onClick={async () => { this.connect() }} >Connect</button>
         </div>
