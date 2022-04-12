@@ -14,6 +14,7 @@ class HoneyPotView extends React.Component {
       web3: props.web3,
       accounts: props.accounts,
       contract: props.contract,
+      artifacts: props.artifacts,
     };
   }
 
@@ -43,6 +44,12 @@ class HoneyPotView extends React.Component {
       desc: 'pauser列表',
       method: 'pausers',
       indexes: [0, 1, 2].map((i) => [i]),
+      renderText: (data) => {
+        if (data === '0x0000000000000000000000000000000000000000') {
+          return '尚未設定';
+        };
+        return data;
+      }
     };
     return <ContractMethodArrayCallView {...props} />;
   }
@@ -56,6 +63,12 @@ class HoneyPotView extends React.Component {
       desc: 'minter列表',
       method: 'minters',
       indexes: [0, 1, 2].map((i) => [i]),
+      renderText: (data) => {
+        if (data === '0x0000000000000000000000000000000000000000') {
+          return '尚未設定';
+        };
+        return data;
+      }
     };
     return <ContractMethodArrayCallView {...props} />;
   }
@@ -68,7 +81,13 @@ class HoneyPotView extends React.Component {
       title: 'Polar Clash',
       desc: 'Polar Clash地址，breed的nft合約。',
       method: 'polarClash',
-      args: []
+      args: [],
+      renderText: (data) => {
+        if (data === this.state.artifacts.polarClash.address) {
+          return '合約地址： ' + data + ' [Polar Clash]';
+        }
+        return data;
+      }
     };
     return <ContractMethodCallView {...props} />;
   }
@@ -81,7 +100,13 @@ class HoneyPotView extends React.Component {
       title: 'Gateway Manager',
       desc: 'Gateway Manager地址，用來收取breed的hon。',
       method: 'gatewayManager',
-      args: []
+      args: [],
+      renderText: (data) => {
+        if (data === this.state.artifacts.gatewayManager.address) {
+          return '合約地址： ' + data + ' [Gateway Manager]';
+        }
+        return data;
+      }
     };
     return <ContractMethodCallView {...props} />;
   }

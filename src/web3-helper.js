@@ -435,9 +435,9 @@ class ContractMethodArrayCallView extends React.Component {
             return;
           }
           if (this.state.renderText) {
-            results[i] = this.state.renderText(result);
+            results[i] = <div>{`${i}: `}{this.state.renderText(result)}</div>;
           } else {
-            results[i] = `${this.state.indexes[i]}: ${result}`;
+            results[i] = `${i}: ${result}`;
           }
           this.setState({ text: this.renderResults() });
         });
