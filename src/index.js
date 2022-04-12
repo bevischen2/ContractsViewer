@@ -115,20 +115,26 @@ class App extends React.Component {
 
   async loadContracts() {
     // load artifacts.
-    let res;
+    let aritfactsURL;
     switch (this.state.chainId) {
       case 80001:
-        res = await fetch('./polygonMumbai.network.json');
+        aritfactsURL = './polygonMumbai.network.json';
         break;
       case 3:
-        res = await fetch('./ropsten.network.json');
+        aritfactsURL = './ropsten.network.json';
         break;
       case 4:
-        res = await fetch('./rinkeby.network.json');
+        aritfactsURL = './rinkeby.network.json';
         break;
       default:
         break
     }
+    let res = await fetch(aritfactsURL, {
+      headers : { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+       }
+    });
     const artifacts = await res.json();
 
     // load contract.
