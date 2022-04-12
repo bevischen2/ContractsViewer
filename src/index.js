@@ -253,6 +253,7 @@ class App extends React.Component {
       web3: this.state.web3,
       accounts: this.state.accounts,
       contract: this.state.contracts.honeyPot,
+      artifacts: this.state.artifacts,
     };
     return <HoneyPotView {...props} />;
   }
@@ -281,7 +282,7 @@ class App extends React.Component {
     if (!this.state.provider || this.state.accounts.length === 0) {
       return (
         <div>
-          v1.0.11
+          v1.0.12
           <br />
           <button onClick={async () => { this.connect() }} >Connect</button>
         </div>
