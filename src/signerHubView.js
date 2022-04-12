@@ -56,7 +56,7 @@ class SignerHubView extends React.Component {
       accounts: this.state.accounts,
       contract: this.state.contract,
       title: 'Polar Clash Signers',
-      desc: `token address: ${tokenAddress}\nPolar Clash 的簽署者`,
+      desc: `token address: ${tokenAddress} [ Polar Clash ]\nPolar Clash 的簽署者`,
       sourceMethod: this.state.contract.methods.getCount(tokenAddress),
       method: 'getAt',
       args: [tokenAddress],
@@ -71,7 +71,7 @@ class SignerHubView extends React.Component {
       accounts: this.state.accounts,
       contract: this.state.contract,
       title: 'Polar Clash Astro Signers',
-      desc: `token address: ${tokenAddress}\nPolar Clash Astro 的簽署者`,
+      desc: `token address: ${tokenAddress} [ Polar Clash Astro ]\nPolar Clash Astro 的簽署者`,
       sourceMethod: this.state.contract.methods.getCount(tokenAddress),
       method: 'getAt',
       args: [tokenAddress],
@@ -80,13 +80,13 @@ class SignerHubView extends React.Component {
   }
 
   renderHONSigners() {
-    const tokenAddress = this.state.artifacts.polarClashAstro.address;
+    const tokenAddress = this.state.artifacts.honeyPot.address;
     let props = {
       web3: this.state.web3,
       accounts: this.state.accounts,
       contract: this.state.contract,
       title: 'Honey Pot Signers',
-      desc: `token address: ${tokenAddress}\nHoney Pot 的簽署者`,
+      desc: `token address: ${tokenAddress} [ Honey Pot ]\nHoney Pot 的簽署者`,
       sourceMethod: this.state.contract.methods.getCount(tokenAddress),
       method: 'getAt',
       args: [tokenAddress],
