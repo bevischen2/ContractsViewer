@@ -37,6 +37,7 @@ class SignerHubView extends React.Component {
   }
 
   renderTokenHub() {
+    let tokenHubAddress = this.state.artifacts.tokenHub.address;
     let props = {
       web3: this.state.web3,
       accounts: this.state.accounts,
@@ -44,7 +45,13 @@ class SignerHubView extends React.Component {
       title: 'Token Hub',
       desc: '設定的token hub',
       method: 'tokenHub',
-      args: []
+      args: [],
+      renderText: (data) => {
+        if (data === tokenHubAddress) {
+          return data + ' [ Token Hub ]';
+        }
+        return data;
+      }
     };
     return <ContractMethodCallView {...props} />;
   }
