@@ -64,10 +64,14 @@ class HoneyPotView extends React.Component {
       method: 'minters',
       indexes: [0, 1, 2].map((i) => [i]),
       renderText: (data) => {
-        if (data === '0x0000000000000000000000000000000000000000') {
-          return '尚未設定';
-        };
-        return data;
+        switch (data) { 
+          case '0x0000000000000000000000000000000000000000':
+            return '尚未設定';
+          case this.state.artifacts.gatewayManager.address:
+            return data + ' [Gateway Manager]';
+          default:
+            return data;
+        }
       }
     };
     return <ContractMethodArrayCallView {...props} />;
