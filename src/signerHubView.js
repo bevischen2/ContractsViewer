@@ -37,6 +37,7 @@ class SignerHubView extends React.Component {
   }
 
   renderTokenHub() {
+    let tokenHubAddress = this.state.artifacts.tokenHub.address;
     let props = {
       web3: this.state.web3,
       accounts: this.state.accounts,
@@ -44,7 +45,13 @@ class SignerHubView extends React.Component {
       title: 'Token Hub',
       desc: '設定的token hub',
       method: 'tokenHub',
-      args: []
+      args: [],
+      renderText: (data) => {
+        if (data === tokenHubAddress) {
+          return data + ' [ Token Hub ]';
+        }
+        return data;
+      }
     };
     return <ContractMethodCallView {...props} />;
   }
@@ -56,7 +63,7 @@ class SignerHubView extends React.Component {
       accounts: this.state.accounts,
       contract: this.state.contract,
       title: 'Polar Clash Signers',
-      desc: 'Polar Clash 的簽署者',
+      desc: `token address: ${tokenAddress} [ Polar Clash ]\nPolar Clash 的簽署者`,
       sourceMethod: this.state.contract.methods.getCount(tokenAddress),
       method: 'getAt',
       args: [tokenAddress],
@@ -71,7 +78,7 @@ class SignerHubView extends React.Component {
       accounts: this.state.accounts,
       contract: this.state.contract,
       title: 'Polar Clash Astro Signers',
-      desc: 'Polar Clash Astro 的簽署者',
+      desc: `token address: ${tokenAddress} [ Polar Clash Astro ]\nPolar Clash Astro 的簽署者`,
       sourceMethod: this.state.contract.methods.getCount(tokenAddress),
       method: 'getAt',
       args: [tokenAddress],
@@ -80,13 +87,13 @@ class SignerHubView extends React.Component {
   }
 
   renderHONSigners() {
-    const tokenAddress = this.state.artifacts.polarClashAstro.address;
+    const tokenAddress = this.state.artifacts.honeyPot.address;
     let props = {
       web3: this.state.web3,
       accounts: this.state.accounts,
       contract: this.state.contract,
       title: 'Honey Pot Signers',
-      desc: 'Hoeny Pot 的簽署者',
+      desc: `token address: ${tokenAddress} [ Honey Pot ]\nHoney Pot 的簽署者`,
       sourceMethod: this.state.contract.methods.getCount(tokenAddress),
       method: 'getAt',
       args: [tokenAddress],

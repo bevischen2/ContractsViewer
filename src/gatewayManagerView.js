@@ -14,6 +14,7 @@ class GatewayManagerView extends React.Component {
       web3: props.web3,
       accounts: props.accounts,
       contract: props.contract,
+      artifacts: props.artifacts,
     };
   }
 
@@ -51,6 +52,12 @@ class GatewayManagerView extends React.Component {
       desc: 'pauser列表',
       method: 'pausers',
       indexes: [0, 1, 2].map((i) => [i]),
+      renderText: (data) => {
+        if (data === '0x0000000000000000000000000000000000000000') {
+          return '尚未設定';
+        };
+        return data;
+      }
     };
     return <ContractMethodArrayCallView {...props} />;
   }
@@ -63,7 +70,13 @@ class GatewayManagerView extends React.Component {
       title: 'Token Hub',
       desc: 'Token Hub的合約地址',
       method: 'tokens',
-      args: []
+      args: [],
+      renderText: (data) => {
+        if (data === this.state.artifacts.tokenHub.address) {
+          return '合約地址： ' + data + ' [Token Hub]';
+        }
+        return data;
+      }
     };
     return <ContractMethodCallView {...props} />;
   }
@@ -76,7 +89,13 @@ class GatewayManagerView extends React.Component {
       title: 'Signer Hub',
       desc: 'Signer Hub的合約地址',
       method: 'signerHub',
-      args: []
+      args: [],
+      renderText: (data) => {
+        if (data === this.state.artifacts.signerHub.address) {
+          return '合約地址： ' + data + ' [Signer Hub]';
+        }
+        return data;
+      }
     };
     return <ContractMethodCallView {...props} />;
   }

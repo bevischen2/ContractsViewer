@@ -200,7 +200,7 @@ class ContractMethodCall extends React.Component {
     return (
       <div>
         <h3>{this.state.title}</h3>
-        <p>{this.state.desc}</p>
+        <div className='new-line'>{this.state.desc}</div>
         <form onSubmit={this.handleSubmit}>
           {this.renderInputs()}
           <input type="submit" value="查詢" />
@@ -316,7 +316,7 @@ class ContractMethodDynamicArrayCall extends React.Component {
     return (
       <div>
         <h3>{this.state.title}</h3>
-        <p>{this.state.desc}</p>
+        <div className='new-line'>{this.state.desc}</div>
         <form onSubmit={this.handleSubmit}>
           {this.renderInputs()}
           <input type="submit" value="查詢" />
@@ -383,7 +383,7 @@ class ContractMethodCallView extends React.Component {
     return (
       <div>
         <h3>{this.state.title}</h3>
-        <p>{this.state.desc}</p>
+        <div className='new-line'>{this.state.desc}</div>
         <div>
           <button onClick={() => this.callContractMethod()}>
             Refresh
@@ -435,9 +435,9 @@ class ContractMethodArrayCallView extends React.Component {
             return;
           }
           if (this.state.renderText) {
-            results[i] = this.state.renderText(result);
+            results[i] = <div>{`${i}: `}{this.state.renderText(result)}</div>;
           } else {
-            results[i] = `${this.state.indexes[i]}: ${result}`;
+            results[i] = `${i}: ${result}`;
           }
           this.setState({ text: this.renderResults() });
         });
@@ -464,7 +464,7 @@ class ContractMethodArrayCallView extends React.Component {
     return (
       <div>
         <h3>{this.state.title}</h3>
-        <p>{this.state.desc}</p>
+        <div className='new-line'>{this.state.desc}</div>
         <div>
           <button onClick={() => this.callContractMethod()}>
             Refresh
@@ -555,7 +555,7 @@ class ContractMethodDynamicArrayCallView extends React.Component {
     return (
       <div>
         <h3>{this.state.title}</h3>
-        <p>{this.state.desc}</p>
+        <div className='new-line'>{this.state.desc}</div>
         <div>
           <button onClick={() => this.callContractMethod()}>
             Refresh
