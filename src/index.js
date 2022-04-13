@@ -235,6 +235,7 @@ class App extends React.Component {
       web3: this.state.web3,
       accounts: this.state.accounts,
       contract: this.state.contracts.polarClash,
+      artifacts: this.state.artifacts,
     };
     return <PolarClashView {...props} />;
   }
@@ -244,6 +245,7 @@ class App extends React.Component {
       web3: this.state.web3,
       accounts: this.state.accounts,
       contract: this.state.contracts.gatewayManager,
+      artifacts: this.state.artifacts,
     };
     return <GatewayManagerView {...props} />;
   }

@@ -16,6 +16,7 @@ class PolarClashView extends React.Component {
       web3: props.web3,
       accounts: props.accounts,
       contract: props.contract,
+      artifacts: props.artifacts,
     };
   }
 
@@ -53,6 +54,12 @@ class PolarClashView extends React.Component {
       desc: 'pauser列表',
       method: 'pausers',
       indexes: [0, 1, 2].map((i) => [i]),
+      renderText: (data) => {
+        if (data === '0x0000000000000000000000000000000000000000') {
+          return '尚未設定';
+        };
+        return data;
+      }
     };
     return <ContractMethodArrayCallView {...props} />;
   }
@@ -66,6 +73,12 @@ class PolarClashView extends React.Component {
       desc: 'minter列表',
       method: 'minters',
       indexes: [0, 1, 2].map((i) => [i]),
+      renderText: (data) => {
+        if (data === '0x0000000000000000000000000000000000000000') {
+          return '尚未設定';
+        };
+        return data;
+      }
     };
     return <ContractMethodArrayCallView {...props} />;
   }
@@ -179,8 +192,11 @@ class PolarClashView extends React.Component {
       method: 'saleConfig',
       args: [],
       renderText: (data) => {
-        const text = '單次mint最大數量：' + data.maxBatchSize + '\n' +
+        let text = '單次mint最大數量：' + data.maxBatchSize + '\n' +
           'Breeder：' + data.breeder;
+        if (data.breeder === this.state.artifacts.honeyPot.address) {
+          text += ' [Honey Pot]';
+        }
         return <div className='new-line'>{text}</div>;
       }
     };
