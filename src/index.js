@@ -22,14 +22,6 @@ class App extends React.Component {
       chainId: null,
       accounts: [],
       web3: null,
-      artifacts: {
-        gatewayManager: null,
-        polarClashAstro: null,
-        polarClash: null,
-        honeyPot: null,
-        signerHub: null,
-        tokenHub: null,
-      },
       contracts: {
         gatewayManager: null,
         polarClashAstro: null,
@@ -37,7 +29,8 @@ class App extends React.Component {
         honeyPot: null,
         signerHub: null,
         tokenHub: null,
-      }
+      },
+      verifiedAddress: {},
     };
 
     // binding actions
@@ -58,6 +51,7 @@ class App extends React.Component {
     provider.on('accountsChanged', this.handleAccountsChanged);
 
     await this.loadContracts();
+    await this.loadVerifiedAddress();
   }
 
   async detectMetamaskEthereumProvider(provider) {
@@ -137,26 +131,44 @@ class App extends React.Component {
     });
     const artifacts = await res.json();
 
-    // load contract.
     const web3 = this.state.web3;
+
+    // load contract.
     let artifact = artifacts.contracts.GatewayManager;
-    this.state.artifacts.gatewayManager = artifact;
+    this.state.verifiedAddress[artifact.address] = 'Gateway Manager';
     this.state.contracts.gatewayManager = new web3.eth.Contract(artifact.abi, artifact.address);
+
     artifact = artifacts.contracts.PolarClashAstro;
-    this.state.artifacts.polarClashAstro = artifact;
+    this.state.verifiedAddress[artifact.address] = 'Polar Clash Astro';
     this.state.contracts.polarClashAstro = new web3.eth.Contract(artifact.abi, artifact.address);
+
     artifact = artifacts.contracts.PolarClash;
-    this.state.artifacts.polarClash = artifact;
+    this.state.verifiedAddress[artifact.address] = 'Polar Clash';
     this.state.contracts.polarClash = new web3.eth.Contract(artifact.abi, artifact.address);
+
     artifact = artifacts.contracts.HoneyPot;
-    this.state.artifacts.honeyPot = artifact;
+    this.state.verifiedAddress[artifact.address] = 'Honey Pot';
     this.state.contracts.honeyPot = new web3.eth.Contract(artifact.abi, artifact.address);
+
     artifact = artifacts.contracts.SignerHub;
-    this.state.artifacts.signerHub = artifact;
+    this.state.verifiedAddress[artifact.address] = 'Signer Hub';
     this.state.contracts.signerHub = new web3.eth.Contract(artifact.abi, artifact.address);
+
     artifact = artifacts.contracts.TokenHub;
-    this.state.artifacts.tokenHub = artifact;
+    this.state.verifiedAddress[artifact.address] = 'Token Hub';
     this.state.contracts.tokenHub = new web3.eth.Contract(artifact.abi, artifact.address);
+  }
+
+  async loadVerifiedAddress() {
+    const url = "./verifiedAddress.json";
+    let res = await fetch(url, {
+      headers : { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+       }
+    });
+    this.state.verifiedAddress = Object.assign({}, this.state.verifiedAddress, await res.json());
+
   }
 
   renderTabs() {
@@ -226,6 +238,7 @@ class App extends React.Component {
       web3: this.state.web3,
       accounts: this.state.accounts,
       contract: this.state.contracts.polarClashAstro,
+      verifiedAddress: this.state.verifiedAddress,
     };
     return <PolarClashAstroView {...props} />;
   }
@@ -236,6 +249,7 @@ class App extends React.Component {
       accounts: this.state.accounts,
       contract: this.state.contracts.polarClash,
       artifacts: this.state.artifacts,
+      verifiedAddress: this.state.verifiedAddress,
     };
     return <PolarClashView {...props} />;
   }
@@ -246,6 +260,7 @@ class App extends React.Component {
       accounts: this.state.accounts,
       contract: this.state.contracts.gatewayManager,
       artifacts: this.state.artifacts,
+      verifiedAddress: this.state.verifiedAddress,
     };
     return <GatewayManagerView {...props} />;
   }
@@ -256,6 +271,7 @@ class App extends React.Component {
       accounts: this.state.accounts,
       contract: this.state.contracts.honeyPot,
       artifacts: this.state.artifacts,
+      verifiedAddress: this.state.verifiedAddress,
     };
     return <HoneyPotView {...props} />;
   }
@@ -266,6 +282,7 @@ class App extends React.Component {
       accounts: this.state.accounts,
       contract: this.state.contracts.signerHub,
       artifacts: this.state.artifacts,
+      verifiedAddress: this.state.verifiedAddress,
     };
     return <SignerHubView {...props} />;
   }
@@ -276,6 +293,7 @@ class App extends React.Component {
       accounts: this.state.accounts,
       contract: this.state.contracts.tokenHub,
       artifacts: this.state.artifacts,
+      verifiedAddress: this.state.verifiedAddress,
     };
     return <TokenHubView {...props} />;
   }
@@ -284,7 +302,7 @@ class App extends React.Component {
     if (!this.state.provider || this.state.accounts.length === 0) {
       return (
         <div>
-          v1.0.13
+          v1.0.14
           <br />
           <button onClick={async () => { this.connect() }} >Connect</button>
         </div>

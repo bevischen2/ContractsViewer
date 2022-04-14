@@ -6,6 +6,7 @@ import {
   ContractMethodArrayCallView,
   ETHBalanceView,
 } from './web3-helper';
+import { verifyAddress } from './helper';
 
 class GatewayManagerView extends React.Component {
   constructor(props) {
@@ -14,7 +15,7 @@ class GatewayManagerView extends React.Component {
       web3: props.web3,
       accounts: props.accounts,
       contract: props.contract,
-      artifacts: props.artifacts,
+      verifiedAddress: props.verifiedAddress,
     };
   }
 
@@ -36,7 +37,7 @@ class GatewayManagerView extends React.Component {
       method: 'owner',
       args: [],
       renderText: (data) => {
-        const text = '擁有者地址：' + data;
+        const text = '擁有者地址：' + verifyAddress(this.state.verifiedAddress, data);
         return <div className='new-line'>{text}</div>;
       }
     };
@@ -53,10 +54,7 @@ class GatewayManagerView extends React.Component {
       method: 'pausers',
       indexes: [0, 1, 2].map((i) => [i]),
       renderText: (data) => {
-        if (data === '0x0000000000000000000000000000000000000000') {
-          return '尚未設定';
-        };
-        return data;
+        return verifyAddress(this.state.verifiedAddress, data);
       }
     };
     return <ContractMethodArrayCallView {...props} />;
@@ -72,10 +70,7 @@ class GatewayManagerView extends React.Component {
       method: 'tokens',
       args: [],
       renderText: (data) => {
-        if (data === this.state.artifacts.tokenHub.address) {
-          return '合約地址： ' + data + ' [Token Hub]';
-        }
-        return data;
+        return '合約地址： ' + verifyAddress(this.state.verifiedAddress, data);
       }
     };
     return <ContractMethodCallView {...props} />;
@@ -91,10 +86,7 @@ class GatewayManagerView extends React.Component {
       method: 'signerHub',
       args: [],
       renderText: (data) => {
-        if (data === this.state.artifacts.signerHub.address) {
-          return '合約地址： ' + data + ' [Signer Hub]';
-        }
-        return data;
+        return '合約地址： ' + verifyAddress(this.state.verifiedAddress, data);
       }
     };
     return <ContractMethodCallView {...props} />;
@@ -166,9 +158,9 @@ class GatewayManagerView extends React.Component {
       ],
       renderText: (data) => {
         const text = '存入者：' + data.owner + '\n' +
-        '合約地址：' + data.token + '\n' +
-        '合約標準：' + data.standard + '\n' +
-        '數量/nft id: ' + data.number;
+          '合約地址：' + data.token + '\n' +
+          '合約標準：' + data.standard + '\n' +
+          '數量/nft id: ' + data.number;
         return <div className='new-line'>{text}</div>;
       }
     };
@@ -191,14 +183,14 @@ class GatewayManagerView extends React.Component {
         },
       ],
       renderText: (data) => {
-        if (data.recipient === '0x0000000000000000000000000000000000000000') { 
+        if (data.recipient === '0x0000000000000000000000000000000000000000') {
           return <div className='new-line'>此提領id尚未使用</div>;
         }
 
         const text = '提領者：' + data.recipient + '\n' +
-        '合約地址：' + data.token + '\n' +
-        '合約標準：' + data.standard + '\n' +
-        '數量/nft id: ' + data.number;
+          '合約地址：' + data.token + '\n' +
+          '合約標準：' + data.standard + '\n' +
+          '數量/nft id: ' + data.number;
         return <div className='new-line'>{text}</div>;
       }
     };

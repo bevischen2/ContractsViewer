@@ -8,6 +8,7 @@ import {
   ContractMethodDynamicArrayCallView,
   ETHBalanceView,
 } from './web3-helper';
+import { verifyAddress } from './helper';
 
 class PolarClashView extends React.Component {
   constructor(props) {
@@ -16,7 +17,7 @@ class PolarClashView extends React.Component {
       web3: props.web3,
       accounts: props.accounts,
       contract: props.contract,
-      artifacts: props.artifacts,
+      verifiedAddress: props.verifiedAddress,
     };
   }
 
@@ -38,7 +39,7 @@ class PolarClashView extends React.Component {
       method: 'owner',
       args: [],
       renderText: (data) => {
-        const text = '擁有者地址：' + data;
+        const text = '擁有者地址：' + verifyAddress(this.state.verifiedAddress, data);
         return <div className='new-line'>{text}</div>;
       }
     };
@@ -55,10 +56,7 @@ class PolarClashView extends React.Component {
       method: 'pausers',
       indexes: [0, 1, 2].map((i) => [i]),
       renderText: (data) => {
-        if (data === '0x0000000000000000000000000000000000000000') {
-          return '尚未設定';
-        };
-        return data;
+        return verifyAddress(this.state.verifiedAddress, data);
       }
     };
     return <ContractMethodArrayCallView {...props} />;
@@ -74,10 +72,7 @@ class PolarClashView extends React.Component {
       method: 'minters',
       indexes: [0, 1, 2].map((i) => [i]),
       renderText: (data) => {
-        if (data === '0x0000000000000000000000000000000000000000') {
-          return '尚未設定';
-        };
-        return data;
+        return verifyAddress(this.state.verifiedAddress, data);
       }
     };
     return <ContractMethodArrayCallView {...props} />;
@@ -193,10 +188,7 @@ class PolarClashView extends React.Component {
       args: [],
       renderText: (data) => {
         let text = '單次mint最大數量：' + data.maxBatchSize + '\n' +
-          'Breeder：' + data.breeder;
-        if (data.breeder === this.state.artifacts.honeyPot.address) {
-          text += ' [Honey Pot]';
-        }
+          'Breeder：' + verifyAddress(this.state.verifiedAddress, data.breeder);;
         return <div className='new-line'>{text}</div>;
       }
     };

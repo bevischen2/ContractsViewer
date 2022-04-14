@@ -7,6 +7,7 @@ import {
   ContractMethodArrayCallView,
   ETHBalanceView,
 } from './web3-helper';
+import { verifyAddress } from './helper';
 
 class SignerHubView extends React.Component {
   constructor(props) {
@@ -15,7 +16,7 @@ class SignerHubView extends React.Component {
       web3: props.web3,
       accounts: props.accounts,
       contract: props.contract,
-      artifacts: props.artifacts,
+      verifiedAddress: props.verifiedAddress,
     };
   }
 
@@ -29,7 +30,7 @@ class SignerHubView extends React.Component {
       method: 'owner',
       args: [],
       renderText: (data) => {
-        const text = '擁有者地址：' + data;
+        const text = '擁有者地址：' + verifyAddress(this.state.verifiedAddress, data);
         return <div className='new-line'>{text}</div>;
       }
     };
@@ -37,7 +38,6 @@ class SignerHubView extends React.Component {
   }
 
   renderTokenHub() {
-    let tokenHubAddress = this.state.artifacts.tokenHub.address;
     let props = {
       web3: this.state.web3,
       accounts: this.state.accounts,
@@ -47,17 +47,17 @@ class SignerHubView extends React.Component {
       method: 'tokenHub',
       args: [],
       renderText: (data) => {
-        if (data === tokenHubAddress) {
-          return data + ' [ Token Hub ]';
-        }
-        return data;
+        return '合約地址： ' + verifyAddress(this.state.verifiedAddress, data);
       }
     };
     return <ContractMethodCallView {...props} />;
   }
 
   renderPCSigners() {
-    const tokenAddress = this.state.artifacts.polarClash.address;
+    const tokenAddress = Object.keys(this.state.verifiedAddress).reduce(function (r, e) {
+      if ('Polar Clash' === this.state.verifiedAddress[e]) r = e;
+      return r;
+    }.bind(this), '');
     let props = {
       web3: this.state.web3,
       accounts: this.state.accounts,
@@ -67,12 +67,18 @@ class SignerHubView extends React.Component {
       sourceMethod: this.state.contract.methods.getCount(tokenAddress),
       method: 'getAt',
       args: [tokenAddress],
+      renderText: (data) => {
+        return verifyAddress(this.state.verifiedAddress, data);
+      }
     };
     return <ContractMethodDynamicArrayCallView {...props} />;
   }
 
   renderPCASigners() {
-    const tokenAddress = this.state.artifacts.polarClashAstro.address;
+    const tokenAddress = Object.keys(this.state.verifiedAddress).reduce(function (r, e) {
+      if ('Polar Clash Astro' === this.state.verifiedAddress[e]) r = e;
+      return r;
+    }.bind(this), '');
     let props = {
       web3: this.state.web3,
       accounts: this.state.accounts,
@@ -82,12 +88,18 @@ class SignerHubView extends React.Component {
       sourceMethod: this.state.contract.methods.getCount(tokenAddress),
       method: 'getAt',
       args: [tokenAddress],
+      renderText: (data) => {
+        return verifyAddress(this.state.verifiedAddress, data);
+      }
     };
     return <ContractMethodDynamicArrayCallView {...props} />;
   }
 
   renderHONSigners() {
-    const tokenAddress = this.state.artifacts.honeyPot.address;
+    const tokenAddress = Object.keys(this.state.verifiedAddress).reduce(function (r, e) {
+      if ('Honey Pot' === this.state.verifiedAddress[e]) r = e;
+      return r;
+    }.bind(this), '');
     let props = {
       web3: this.state.web3,
       accounts: this.state.accounts,
@@ -97,6 +109,9 @@ class SignerHubView extends React.Component {
       sourceMethod: this.state.contract.methods.getCount(tokenAddress),
       method: 'getAt',
       args: [tokenAddress],
+      renderText: (data) => {
+        return verifyAddress(this.state.verifiedAddress, data);
+      }
     };
     return <ContractMethodDynamicArrayCallView {...props} />;
   }

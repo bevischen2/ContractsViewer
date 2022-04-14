@@ -8,6 +8,7 @@ import {
   ContractMethodDynamicArrayCallView,
   ETHBalanceView,
 } from './web3-helper';
+import { verifyAddress } from './helper';
 
 class PolarClashAstroView extends React.Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class PolarClashAstroView extends React.Component {
       web3: props.web3,
       accounts: props.accounts,
       contract: props.contract,
+      verifiedAddress: props.verifiedAddress,
     };
   }
 
@@ -37,7 +39,7 @@ class PolarClashAstroView extends React.Component {
       method: 'owner',
       args: [],
       renderText: (data) => {
-        const text = '擁有者地址：' + data;
+        const text = '擁有者地址：' + verifyAddress(this.state.verifiedAddress, data);
         return <div className='new-line'>{text}</div>;
       }
     };
