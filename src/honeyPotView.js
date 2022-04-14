@@ -6,6 +6,7 @@ import {
   ContractMethodArrayCallView,
   ETHBalanceView,
 } from './web3-helper';
+import { verifyAddress } from './helper';
 
 class HoneyPotView extends React.Component {
   constructor(props) {
@@ -14,7 +15,7 @@ class HoneyPotView extends React.Component {
       web3: props.web3,
       accounts: props.accounts,
       contract: props.contract,
-      artifacts: props.artifacts,
+      verifiedAddress: props.verifiedAddress,
     };
   }
 
@@ -28,7 +29,7 @@ class HoneyPotView extends React.Component {
       method: 'owner',
       args: [],
       renderText: (data) => {
-        const text = '擁有者地址：' + data;
+        const text = '擁有者地址：' + verifyAddress(this.state.verifiedAddress, data);
         return <div className='new-line'>{text}</div>;
       }
     };
@@ -45,10 +46,7 @@ class HoneyPotView extends React.Component {
       method: 'pausers',
       indexes: [0, 1, 2].map((i) => [i]),
       renderText: (data) => {
-        if (data === '0x0000000000000000000000000000000000000000') {
-          return '尚未設定';
-        };
-        return data;
+        return verifyAddress(this.state.verifiedAddress, data);
       }
     };
     return <ContractMethodArrayCallView {...props} />;
@@ -64,14 +62,7 @@ class HoneyPotView extends React.Component {
       method: 'minters',
       indexes: [0, 1, 2].map((i) => [i]),
       renderText: (data) => {
-        switch (data) { 
-          case '0x0000000000000000000000000000000000000000':
-            return '尚未設定';
-          case this.state.artifacts.gatewayManager.address:
-            return data + ' [Gateway Manager]';
-          default:
-            return data;
-        }
+        return verifyAddress(this.state.verifiedAddress, data);
       }
     };
     return <ContractMethodArrayCallView {...props} />;
@@ -87,10 +78,7 @@ class HoneyPotView extends React.Component {
       method: 'polarClash',
       args: [],
       renderText: (data) => {
-        if (data === this.state.artifacts.polarClash.address) {
-          return '合約地址： ' + data + ' [Polar Clash]';
-        }
-        return data;
+        return '合約地址： ' + verifyAddress(this.state.verifiedAddress, data);
       }
     };
     return <ContractMethodCallView {...props} />;
@@ -106,10 +94,7 @@ class HoneyPotView extends React.Component {
       method: 'gatewayManager',
       args: [],
       renderText: (data) => {
-        if (data === this.state.artifacts.gatewayManager.address) {
-          return '合約地址： ' + data + ' [Gateway Manager]';
-        }
-        return data;
+        return '合約地址： ' + verifyAddress(this.state.verifiedAddress, data);
       }
     };
     return <ContractMethodCallView {...props} />;

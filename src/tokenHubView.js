@@ -7,6 +7,7 @@ import {
   ContractMethodArrayCallView,
   ETHBalanceView,
 } from './web3-helper';
+import { verifyAddress } from './helper';
 
 class TokenHubView extends React.Component {
   constructor(props) {
@@ -15,7 +16,7 @@ class TokenHubView extends React.Component {
       web3: props.web3,
       accounts: props.accounts,
       contract: props.contract,
-      artifacts: props.artifacts,
+      verifiedAddress: props.verifiedAddress,
     };
   }
 
@@ -29,7 +30,7 @@ class TokenHubView extends React.Component {
       method: 'owner',
       args: [],
       renderText: (data) => {
-        const text = '擁有者地址：' + data;
+        const text = '擁有者地址：' + verifyAddress(this.state.verifiedAddress, data);
         return <div className='new-line'>{text}</div>;
       }
     };
@@ -37,10 +38,6 @@ class TokenHubView extends React.Component {
   }
 
   render721Tokens() {
-    const tokens = {
-      polarClash: this.state.artifacts.polarClash.address,
-      polarClashAstro: this.state.artifacts.polarClashAstro.address,
-    };
     let props = {
       web3: this.state.web3,
       accounts: this.state.accounts,
@@ -51,24 +48,13 @@ class TokenHubView extends React.Component {
       method: 'tokens',
       args: [721],
       renderText: (data) => {
-        const text = data;
-        switch (data) {
-          case tokens.polarClash:
-            return text + ' [ Polar Clash ]';
-          case tokens.polarClashAstro:
-            return text + ' [ Polar Clash Astro]'
-          default:
-            return text;
-        }
+        return verifyAddress(this.state.verifiedAddress, data);
       }
     };
     return <ContractMethodDynamicArrayCallView {...props} />;
   }
 
   render20Tokens() {
-    const tokens = {
-      honeyPot: this.state.artifacts.honeyPot.address,
-    };
     let props = {
       web3: this.state.web3,
       accounts: this.state.accounts,
@@ -79,13 +65,7 @@ class TokenHubView extends React.Component {
       method: 'tokens',
       args: [20],
       renderText: (data) => {
-        const text = data;
-        switch (data) {
-          case tokens.honeyPot:
-            return text + ' [ Honey Pot ]';
-          default:
-            return text;
-        }
+        return verifyAddress(this.state.verifiedAddress, data);
       }
     };
     return <ContractMethodDynamicArrayCallView {...props} />;
