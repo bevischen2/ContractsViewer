@@ -302,7 +302,7 @@ class App extends React.Component {
     if (!this.state.provider || this.state.accounts.length === 0) {
       return (
         <div>
-          v1.0.13
+          v1.0.14
           <br />
           <button onClick={async () => { this.connect() }} >Connect</button>
         </div>
