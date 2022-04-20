@@ -114,6 +114,9 @@ class App extends React.Component {
       case 80001:
         aritfactsURL = './polygonMumbai.network.json';
         break;
+      case 1:
+        aritfactsURL = './mainnet.network.json';
+        break;
       case 3:
         aritfactsURL = './ropsten.network.json';
         break;
@@ -124,10 +127,10 @@ class App extends React.Component {
         break
     }
     let res = await fetch(aritfactsURL, {
-      headers : { 
+      headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
-       }
+      }
     });
     const artifacts = await res.json();
 
@@ -135,73 +138,81 @@ class App extends React.Component {
 
     // load contract.
     let artifact = artifacts.contracts.GatewayManager;
-    this.state.verifiedAddress[artifact.address] = 'Gateway Manager';
-    this.state.contracts.gatewayManager = new web3.eth.Contract(artifact.abi, artifact.address);
+    if (artifact) {
+      this.state.verifiedAddress[artifact.address] = 'Gateway Manager';
+      this.state.contracts.gatewayManager = new web3.eth.Contract(artifact.abi, artifact.address);
+    }
 
     artifact = artifacts.contracts.PolarClashAstro;
-    this.state.verifiedAddress[artifact.address] = 'Polar Clash Astro';
-    this.state.contracts.polarClashAstro = new web3.eth.Contract(artifact.abi, artifact.address);
+    if (artifact) {
+      this.state.verifiedAddress[artifact.address] = 'Polar Clash Astro';
+      this.state.contracts.polarClashAstro = new web3.eth.Contract(artifact.abi, artifact.address);
+    }
 
     artifact = artifacts.contracts.PolarClash;
-    this.state.verifiedAddress[artifact.address] = 'Polar Clash';
-    this.state.contracts.polarClash = new web3.eth.Contract(artifact.abi, artifact.address);
+    if (artifact) {
+      this.state.verifiedAddress[artifact?.address] = 'Polar Clash';
+      this.state.contracts.polarClash = new web3.eth.Contract(artifact.abi, artifact.address);
+    }
 
     artifact = artifacts.contracts.HoneyPot;
-    this.state.verifiedAddress[artifact.address] = 'Honey Pot';
-    this.state.contracts.honeyPot = new web3.eth.Contract(artifact.abi, artifact.address);
+    if (artifact) {
+      this.state.verifiedAddress[artifact.address] = 'Honey Pot';
+      this.state.contracts.honeyPot = new web3.eth.Contract(artifact.abi, artifact.address);
+    }
 
     artifact = artifacts.contracts.SignerHub;
-    this.state.verifiedAddress[artifact.address] = 'Signer Hub';
-    this.state.contracts.signerHub = new web3.eth.Contract(artifact.abi, artifact.address);
+    if (artifact) {
+      this.state.verifiedAddress[artifact.address] = 'Signer Hub';
+      this.state.contracts.signerHub = new web3.eth.Contract(artifact.abi, artifact.address);
+    }
 
     artifact = artifacts.contracts.TokenHub;
-    this.state.verifiedAddress[artifact.address] = 'Token Hub';
-    this.state.contracts.tokenHub = new web3.eth.Contract(artifact.abi, artifact.address);
+    if (artifact) {
+      this.state.verifiedAddress[artifact.address] = 'Token Hub';
+      this.state.contracts.tokenHub = new web3.eth.Contract(artifact.abi, artifact.address);
+    }
   }
 
   async loadVerifiedAddress() {
     const url = "./verifiedAddress.json";
     let res = await fetch(url, {
-      headers : { 
+      headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
-       }
+      }
     });
     this.state.verifiedAddress = Object.assign({}, this.state.verifiedAddress, await res.json());
 
   }
 
   renderTabs() {
+    const renderTab = (contract, page) => {
+      if (contract) {
+        return <div>{page}</div>
+      } else {
+        return <div>合約尚未佈署</div>
+      }
+    }
+
     const tabs = [
       () => {
-        return (
-          <div>{this.rendePolarClashAstro()}</div>
-        )
+        return renderTab(this.state.contracts.polarClashAstro, this.rendePolarClashAstro())
       },
       () => {
-        return (
-          <div>{this.rendePolarClash()}</div>
-        )
+        return renderTab(this.state.contracts.polarClash, this.rendePolarClash())
       },
       () => {
-        return (
-          <div>{this.renderGatewayManager()}</div>
-        )
+        return renderTab(this.state.contracts.gatewayManager, this.renderGatewayManager())
       },
       () => {
-        return (
-          <div>{this.renderHoneyPot()}</div>
-        )
+        return renderTab(this.state.contracts.honeyPot, this.renderHoneyPot())
       },
       () => {
-        return (
-          <div>{this.renderSignerHub()}</div>
-        )
+        return renderTab(this.state.contracts.signerHub, this.renderSignerHub())
       },
       () => {
-        return (
-          <div>{this.renderTokenHub()}</div>
-        )
+        return renderTab(this.state.contracts.tokenHub, this.renderTokenHub())
       },
     ]
 
@@ -302,7 +313,7 @@ class App extends React.Component {
     if (!this.state.provider || this.state.accounts.length === 0) {
       return (
         <div>
-          v1.0.14
+          v1.0.15
           <br />
           <button onClick={async () => { this.connect() }} >Connect</button>
         </div>
