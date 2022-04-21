@@ -9,6 +9,7 @@ import { GatewayManagerView } from './gatewayManagerView';
 import { HoneyPotView } from './honeyPotView';
 import { SignerHubView } from './signerHubView';
 import { TokenHubView } from './tokenHubView';
+import { EtherscanLinks } from './helper';
 
 import { Tabs } from 'react-simple-tabs-component'
 // (Optional) if you don't want to include bootstrap css stylesheet
@@ -32,6 +33,7 @@ class App extends React.Component {
       },
       verifiedAddress: {},
     };
+    this.etherscanLink = null;
 
     // binding actions
     this.handleChainChanged = this.handleChainChanged.bind(this);
@@ -65,6 +67,7 @@ class App extends React.Component {
         this.state.web3 = new Web3(provider);
         const chainId = await provider.request({ method: 'eth_chainId' })
         this.state.chainId = this.state.web3.utils.hexToNumber(chainId);
+        this.etherscanLink = EtherscanLinks[this.state.chainId];
       }
     } else {
       console.log('Please install MetaMask!');
@@ -250,6 +253,7 @@ class App extends React.Component {
       accounts: this.state.accounts,
       contract: this.state.contracts.polarClashAstro,
       verifiedAddress: this.state.verifiedAddress,
+      etherscanLink: this.etherscanLink,
     };
     return <PolarClashAstroView {...props} />;
   }
@@ -261,6 +265,7 @@ class App extends React.Component {
       contract: this.state.contracts.polarClash,
       artifacts: this.state.artifacts,
       verifiedAddress: this.state.verifiedAddress,
+      etherscanLink: this.etherscanLink,
     };
     return <PolarClashView {...props} />;
   }
@@ -272,6 +277,7 @@ class App extends React.Component {
       contract: this.state.contracts.gatewayManager,
       artifacts: this.state.artifacts,
       verifiedAddress: this.state.verifiedAddress,
+      etherscanLink: this.etherscanLink,
     };
     return <GatewayManagerView {...props} />;
   }
@@ -283,6 +289,7 @@ class App extends React.Component {
       contract: this.state.contracts.honeyPot,
       artifacts: this.state.artifacts,
       verifiedAddress: this.state.verifiedAddress,
+      etherscanLink: this.etherscanLink,
     };
     return <HoneyPotView {...props} />;
   }
@@ -294,6 +301,7 @@ class App extends React.Component {
       contract: this.state.contracts.signerHub,
       artifacts: this.state.artifacts,
       verifiedAddress: this.state.verifiedAddress,
+      etherscanLink: this.etherscanLink,
     };
     return <SignerHubView {...props} />;
   }
@@ -305,6 +313,7 @@ class App extends React.Component {
       contract: this.state.contracts.tokenHub,
       artifacts: this.state.artifacts,
       verifiedAddress: this.state.verifiedAddress,
+      etherscanLink: this.etherscanLink,
     };
     return <TokenHubView {...props} />;
   }
@@ -313,7 +322,7 @@ class App extends React.Component {
     if (!this.state.provider || this.state.accounts.length === 0) {
       return (
         <div>
-          v1.0.15
+          v1.0.16
           <br />
           <button onClick={async () => { this.connect() }} >Connect</button>
         </div>

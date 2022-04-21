@@ -435,9 +435,9 @@ class ContractMethodArrayCallView extends React.Component {
             return;
           }
           if (this.state.renderText) {
-            results[i] = <div>{`${i}: `}{this.state.renderText(result)}</div>;
+            results[i] = <div>{`[${i}]: `}{this.state.renderText(result)}</div>;
           } else {
-            results[i] = `${i}: ${result}`;
+            results[i] = `[${i}]: ${result}`;
           }
           this.setState({ text: this.renderResults() });
         });
@@ -526,9 +526,9 @@ class ContractMethodDynamicArrayCallView extends React.Component {
             return;
           }
           if (this.state.renderText) {
-            results[i] = `${i}: ${this.state.renderText(result)}`;
+            results[i] = <div>{`[${i}]: `}{this.state.renderText(result)}</div>;
           } else {
-            results[i] = `${i}: ${result}`;
+            results[i] = `[${i}]: ${result}`;
           }
           this.setState({ text: this.renderResults() });
         });

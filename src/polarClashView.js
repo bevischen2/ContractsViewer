@@ -8,7 +8,7 @@ import {
   ContractMethodDynamicArrayCallView,
   ETHBalanceView,
 } from './web3-helper';
-import { verifyAddress } from './helper';
+import { renderAddress, renderVerifiedAddress } from './helper';
 
 class PolarClashView extends React.Component {
   constructor(props) {
@@ -18,6 +18,7 @@ class PolarClashView extends React.Component {
       accounts: props.accounts,
       contract: props.contract,
       verifiedAddress: props.verifiedAddress,
+      etherscanLink: props.etherscanLink,
     };
   }
 
@@ -39,8 +40,9 @@ class PolarClashView extends React.Component {
       method: 'owner',
       args: [],
       renderText: (data) => {
-        const text = '擁有者地址：' + verifyAddress(this.state.verifiedAddress, data);
-        return <div className='new-line'>{text}</div>;
+        return <div>
+          擁有者地址： {renderVerifiedAddress(this.state.verifiedAddress, data, this.state.etherscanLink)}
+        </div>;
       }
     };
     return <ContractMethodCallView {...props} />;
@@ -56,7 +58,7 @@ class PolarClashView extends React.Component {
       method: 'pausers',
       indexes: [0, 1, 2].map((i) => [i]),
       renderText: (data) => {
-        return verifyAddress(this.state.verifiedAddress, data);
+        return renderVerifiedAddress(this.state.verifiedAddress, data, this.state.etherscanLink);
       }
     };
     return <ContractMethodArrayCallView {...props} />;
@@ -72,7 +74,7 @@ class PolarClashView extends React.Component {
       method: 'minters',
       indexes: [0, 1, 2].map((i) => [i]),
       renderText: (data) => {
-        return verifyAddress(this.state.verifiedAddress, data);
+        return renderVerifiedAddress(this.state.verifiedAddress, data, this.state.etherscanLink);
       }
     };
     return <ContractMethodArrayCallView {...props} />;
@@ -187,9 +189,12 @@ class PolarClashView extends React.Component {
       method: 'saleConfig',
       args: [],
       renderText: (data) => {
-        let text = '單次mint最大數量：' + data.maxBatchSize + '\n' +
-          'Breeder：' + verifyAddress(this.state.verifiedAddress, data.breeder);;
-        return <div className='new-line'>{text}</div>;
+        return <div className='new-line'>
+          <span>
+            單次mint最大數量：{data.maxBatchSize}<br />
+            Breeder： {renderVerifiedAddress(this.state.verifiedAddress, data.breeder, this.state.etherscanLink)}
+          </span>
+        </div>;
       }
     };
     return <ContractMethodCallView {...props} />;
@@ -297,7 +302,9 @@ class PolarClashView extends React.Component {
     return (
       <div>
         <h2>Polar Clash</h2>
-        <div>合約地址：{this.state.contract._address}</div>
+        <div>
+          合約地址： {renderAddress(this.state.contract._address, this.state.etherscanLink)}
+        </div>
         {this.renderETHBalance()}
         {this.renderOwner()}
         {this.renderPausers()}

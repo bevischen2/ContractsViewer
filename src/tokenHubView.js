@@ -7,7 +7,7 @@ import {
   ContractMethodArrayCallView,
   ETHBalanceView,
 } from './web3-helper';
-import { verifyAddress } from './helper';
+import { renderAddress, renderVerifiedAddress } from './helper';
 
 class TokenHubView extends React.Component {
   constructor(props) {
@@ -17,6 +17,7 @@ class TokenHubView extends React.Component {
       accounts: props.accounts,
       contract: props.contract,
       verifiedAddress: props.verifiedAddress,
+      etherscanLink: props.etherscanLink,
     };
   }
 
@@ -30,8 +31,9 @@ class TokenHubView extends React.Component {
       method: 'owner',
       args: [],
       renderText: (data) => {
-        const text = '擁有者地址：' + verifyAddress(this.state.verifiedAddress, data);
-        return <div className='new-line'>{text}</div>;
+        return <div>
+          擁有者地址： {renderVerifiedAddress(this.state.verifiedAddress, data, this.state.etherscanLink)}
+        </div>;
       }
     };
     return <ContractMethodCallView {...props} />;
@@ -48,7 +50,7 @@ class TokenHubView extends React.Component {
       method: 'tokens',
       args: [721],
       renderText: (data) => {
-        return verifyAddress(this.state.verifiedAddress, data);
+        return renderVerifiedAddress(this.state.verifiedAddress, data, this.state.etherscanLink);
       }
     };
     return <ContractMethodDynamicArrayCallView {...props} />;
@@ -65,7 +67,7 @@ class TokenHubView extends React.Component {
       method: 'tokens',
       args: [20],
       renderText: (data) => {
-        return verifyAddress(this.state.verifiedAddress, data);
+        return renderVerifiedAddress(this.state.verifiedAddress, data, this.state.etherscanLink);
       }
     };
     return <ContractMethodDynamicArrayCallView {...props} />;
@@ -101,7 +103,9 @@ class TokenHubView extends React.Component {
     return (
       <div>
         <h2>Token Hub</h2>
-        <div>合約地址：{this.state.contract._address}</div>
+        <div>
+          合約地址： {renderAddress(this.state.contract._address, this.state.etherscanLink)}
+        </div>
         {this.renderOwner()}
         {this.render721Tokens()}
         {this.render20Tokens()}
