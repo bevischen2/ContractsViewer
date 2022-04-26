@@ -224,6 +224,10 @@ class PolarClashAstroView extends React.Component {
         <h2>Polar Clash Astro</h2>
         <div>
           合約地址： {renderAddress(this.state.contract._address, this.state.etherscanLink)}
+          &nbsp;&nbsp;
+          <a href='https://opensea.io/collection/polar-clash-astro' target='_blank' rel="noreferrer">
+            View on OpenSea
+          </a>
         </div>
         {this.renderETHBalance()}
         {this.renderOwner()}
