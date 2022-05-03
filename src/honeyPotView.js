@@ -6,7 +6,7 @@ import {
   ContractMethodArrayCallView,
   ETHBalanceView,
 } from './web3-helper';
-import { verifyAddress } from './helper';
+import { renderAddress, renderVerifiedAddress } from './helper';
 
 class HoneyPotView extends React.Component {
   constructor(props) {
@@ -16,7 +16,21 @@ class HoneyPotView extends React.Component {
       accounts: props.accounts,
       contract: props.contract,
       verifiedAddress: props.verifiedAddress,
+      etherscanLink: props.etherscanLink,
+      paused: null,
     };
+  }
+
+  componentDidMount() {
+    this.renderPaused();
+  }
+
+  renderPaused() {
+    this.state.contract.methods.paused().call().then((data) => {
+      this.setState({
+        paused: data && "（合約暫停中）",
+      });
+    });
   }
 
   renderOwner() {
@@ -29,8 +43,9 @@ class HoneyPotView extends React.Component {
       method: 'owner',
       args: [],
       renderText: (data) => {
-        const text = '擁有者地址：' + verifyAddress(this.state.verifiedAddress, data);
-        return <div className='new-line'>{text}</div>;
+        return <div>
+          擁有者地址： {renderVerifiedAddress(this.state.verifiedAddress, data, this.state.etherscanLink)}
+        </div>;
       }
     };
     return <ContractMethodCallView {...props} />;
@@ -46,7 +61,7 @@ class HoneyPotView extends React.Component {
       method: 'pausers',
       indexes: [0, 1, 2].map((i) => [i]),
       renderText: (data) => {
-        return verifyAddress(this.state.verifiedAddress, data);
+        return renderVerifiedAddress(this.state.verifiedAddress, data, this.state.etherscanLink);
       }
     };
     return <ContractMethodArrayCallView {...props} />;
@@ -62,7 +77,7 @@ class HoneyPotView extends React.Component {
       method: 'minters',
       indexes: [0, 1, 2].map((i) => [i]),
       renderText: (data) => {
-        return verifyAddress(this.state.verifiedAddress, data);
+        return renderVerifiedAddress(this.state.verifiedAddress, data, this.state.etherscanLink);
       }
     };
     return <ContractMethodArrayCallView {...props} />;
@@ -78,7 +93,9 @@ class HoneyPotView extends React.Component {
       method: 'polarClash',
       args: [],
       renderText: (data) => {
-        return '合約地址： ' + verifyAddress(this.state.verifiedAddress, data);
+        return <div>
+          合約地址： {renderVerifiedAddress(this.state.verifiedAddress, data, this.state.etherscanLink)}
+        </div>;
       }
     };
     return <ContractMethodCallView {...props} />;
@@ -94,12 +111,14 @@ class HoneyPotView extends React.Component {
       method: 'gatewayManager',
       args: [],
       renderText: (data) => {
-        return '合約地址： ' + verifyAddress(this.state.verifiedAddress, data);
+        return <div>
+          合約地址： {renderVerifiedAddress(this.state.verifiedAddress, data, this.state.etherscanLink)}
+        </div>;
       }
     };
     return <ContractMethodCallView {...props} />;
   }
-      
+
 
   renderName() {
     let props = {
@@ -207,13 +226,15 @@ class HoneyPotView extends React.Component {
       }
     };
     return <ContractMethodCall {...props} />;
-  }s
+  }
 
   render() {
     return (
       <div>
-        <h2>Honey Pot</h2>
-        <div>合約地址：{this.state.contract._address}</div>
+        <h2>Honey Pot {this.state.paused}</h2>
+        <div>
+          合約地址： {renderAddress(this.state.contract._address, this.state.etherscanLink)}
+        </div>
         {this.renderOwner()}
         {this.renderPausers()}
         {this.renderMinters()}
