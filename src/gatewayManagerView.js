@@ -17,7 +17,20 @@ class GatewayManagerView extends React.Component {
       contract: props.contract,
       verifiedAddress: props.verifiedAddress,
       etherscanLink: props.etherscanLink,
+      paused: null,
     };
+  }
+
+  componentDidMount() {
+    this.renderPaused();
+  }
+
+  renderPaused() {
+    this.state.contract.methods.paused().call().then((data) => {
+      this.setState({
+        paused: data && "（合約暫停中）",
+      });
+    });
   }
 
   renderETHBalance() {
@@ -206,7 +219,7 @@ class GatewayManagerView extends React.Component {
   render() {
     return (
       <div>
-        <h2>Gateway Manager</h2>
+        <h2>Gateway Manager {this.state.paused}</h2>
         <div>
           合約地址： {renderAddress(this.state.contract._address, this.state.etherscanLink)}
         </div>

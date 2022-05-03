@@ -17,7 +17,20 @@ class HoneyPotView extends React.Component {
       contract: props.contract,
       verifiedAddress: props.verifiedAddress,
       etherscanLink: props.etherscanLink,
+      paused: null,
     };
+  }
+
+  componentDidMount() {
+    this.renderPaused();
+  }
+
+  renderPaused() {
+    this.state.contract.methods.paused().call().then((data) => {
+      this.setState({
+        paused: data && "（合約暫停中）",
+      });
+    });
   }
 
   renderOwner() {
@@ -218,7 +231,7 @@ class HoneyPotView extends React.Component {
   render() {
     return (
       <div>
-        <h2>Honey Pot</h2>
+        <h2>Honey Pot {this.state.paused}</h2>
         <div>
           合約地址： {renderAddress(this.state.contract._address, this.state.etherscanLink)}
         </div>
