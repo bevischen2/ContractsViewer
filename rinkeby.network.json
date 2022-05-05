@@ -575,7 +575,7 @@
             ]
         },
         "HoneyPot": {
-            "address": "0xb6c49ee9F2cD40C60cB6Fe2F00D38a44641FBcF0",
+            "address": "0x845eE8F2336eb3Ea86b16372c693b5294df72675",
             "abi": [
                 {
                     "inputs": [],
@@ -1493,7 +1493,7 @@
             ]
         },
         "PolarClash": {
-            "address": "0x4551297e18e40eeA568573B14B1b32B807730b64",
+            "address": "0xdB50F0a137388495a1D4D1D7B18f696bEAF2d875",
             "abi": [
                 {
                     "inputs": [
